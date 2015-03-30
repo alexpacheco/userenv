@@ -7,7 +7,7 @@
 }
 
 \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
-\usepackage{amsmath,amssymb,amsfonts,subfigure}
+\usepackage{amsmath,amssymb,amsfonts}
 \usepackage{multirow}
 \usepackage{tabularx}
 \usepackage{booktabs}
@@ -24,7 +24,7 @@
 \usepackage{hyperref}
 \usepackage{movie15}
 \hypersetup{
-  pdftitle={LONI \& LSU HPC User Environment},
+  pdftitle={HPC User Environment, Job Management with PBS/Loadleveler},
   pdfauthor={Alexander B. Pacheco, User Services Consultant, Louisiana State University}
 }
 %\usepackage{movie15}
@@ -36,8 +36,6 @@
 
 \usepackage[english]{babel}
 \usepackage[latin1]{inputenc}
-\usepackage{times}
-\usepackage{amsmath}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \definecolor{DarkGreen}{rgb}{0.0,0.3,0.0}
@@ -46,7 +44,9 @@
 \definecolor{indigo}{rgb}{0.41,0.1,0.0}
 \definecolor{seagreen}{rgb}{0.1,1.0,0.1}
 \DeclareSymbolFont{extraup}{U}{zavm}{m}{n}
-\DeclareMathSymbol{\vardiamond}{\mathalpha}{extraup}{87}
+%\DeclareMathSymbol{\vardiamond}{\mathalpha}{extraup}{87}
+\newcommand*\vardiamond{\textcolor{tigerspurple}{%
+  \ensuremath{\blacklozenge}}}
 \newcommand*\up{\textcolor{green}{%
   \ensuremath{\blacktriangle}}}
 \newcommand*\down{\textcolor{red}{%
@@ -54,32 +54,45 @@
 \newcommand*\const{\textcolor{darkgray}%
   {\textbf{--}}}
 
+
 \setbeamercolor{uppercol}{fg=white,bg=red!30!black}%
 \setbeamercolor{lowercol}{fg=black,bg=red!15!white}%
+\setbeamercolor{uppercol1}{fg=white,bg=blue!30!black}%
+\setbeamercolor{lowercol1}{fg=black,bg=blue!15!white}%%
+\setbeamercolor{uppercol2}{fg=white,bg=green!30!black}%
+\setbeamercolor{lowercol2}{fg=black,bg=green!15!white}%
 \newenvironment{colorblock}[4]
 {
 \setbeamercolor{upperblock}{fg=#1,bg=#2}
 \setbeamercolor{lowerblock}{fg=#3,bg=#4}
 \begin{beamerboxesrounded}[upper=upperblock,lower=lowerblock,shadow=true]}
 {\end{beamerboxesrounded}}
-
-\newenvironment{colorblock2}[2]
+\newenvironment{ablock}[0]
 {
-\begin{beamerboxesrounded}[upper=#1,lower=#2,shadow=true]}
+\begin{beamerboxesrounded}[upper=uppercol,lower=lowercol,shadow=true]}
+{\end{beamerboxesrounded}}
+\newenvironment{bblock}[0]
+{
+\begin{beamerboxesrounded}[upper=uppercol1,lower=lowercol1,shadow=true]}
+{\end{beamerboxesrounded}}
+\newenvironment{eblock}[0]
+{
+\begin{beamerboxesrounded}[upper=uppercol2,lower=lowercol2,shadow=true]}
 {\end{beamerboxesrounded}}
 
-\title{LONI \& LSU HPC User Environment}
+
+\title{HPC User Environment, Job Management with PBS/Loadleveler}
 
 
 \author[Alex Pacheco]{\large{Alexander~B.~Pacheco}}
        
 %\institute[High Performance Computing @ Louisiana State University - http://www.hpc.lsu.edu] {\inst{}\footnotesize{User Services Consultant\\LSU HPC \& LONI\\sys-help@loni.org}}
-\institute[2011 DFT Workshop] {\inst{}\footnotesize{User Services Consultant\\LSU HPC \& LONI\\sys-help@loni.org}}
+\institute[HPC Training: Fall 2011] {\inst{}\footnotesize{User Services Consultant\\LSU HPC \& LONI\\sys-help@loni.org}}
 
-\date[\hfill{July 23, 2011\hspace{2cm}\insertframenumber/\inserttotalframenumber}]{\scriptsize{DFT Workshop\\Louisiana State University\\Baton Rouge\\July 23, 2011}}
+\date[\hfill{Sep 14, 2011\hspace{2cm}\insertframenumber/\inserttotalframenumber}]{\scriptsize{HPC Training Fall 2011\\Louisiana State University\\Baton Rouge\\Sep 14, 2011}}
      
 \subject{Talks}
-\keywords{LONI \& LSU HPC: Computing Resources, User Environment, Job Management}
+\keywords{LONI \& LSU HPC Computing Resources, User Environment, Job Management, PBS, Loadleveler}
 % This is only inserted into the PDF information catalog. Can be left
 % out. 
 
@@ -92,7 +105,8 @@
 
 \pgfdeclareimage[height=1.0cm]{loni-logo}{LONI}
 %\pgfdeclareimage[height=0.5cm]{gold-logo}{GOLD_LSU}
-\pgfdeclareimage[height=0.8cm]{purple-logo}{PURPLELSU}
+%\pgfdeclareimage[height=0.8cm]{purple-logo}{PURPLELSU}
+\pgfdeclareimage[height=1.2cm]{purple-logo}{ITSbanner}
 %\pgfdeclareimage[height=1.5cm]{lsuccttower-logo}{FULLCOLORTOWER_VERT}%{qtp}
 %\pgfdeclareimage[height=0.5cm]{lsutower-logo}{ProcessHorizontal}
 % \logo{\pgfuseimage{purple-logo}}
@@ -109,7 +123,7 @@
 }
 \setbeamertemplate{sidebar right}{%
    \vfill%
-   \rlap{\hskip-2.1cm%
+   \rlap{\hskip-1.55cm%
          %
          {\pgfuseimage{purple-logo}}}%
    \vskip-6pt%
@@ -146,6 +160,9 @@
 
 \begin{frame}
 \frametitle{\small LONI \& LSU HPC Clusters}
+\begin{itemize}
+\item Two major architectures.
+\end{itemize}
 \begin{columns}
 \column{0.5\textwidth}
 \begin{colorblock}{white}{blue!30!black}{black}{blue!15!white}{\bf Linux Clusters}
@@ -164,15 +181,16 @@
 \end{itemize}
 \end{colorblock}
 \end{columns}
+\vspace{1cm}
+\begin{itemize}
+\item The LONI AIX clusters are on a path to decommissioning.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \scriptsize{
 \begin{block}{Linux Clusters}
 \begin{center}
-\def\firstrowcolor{\rowcolor{green}}
-\def\secondrowcolor{\rowcolor{blue!50}}
-\def\thirdrowcolor{\rowcolor{tigerspurple!80}}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
  & Name & Peak TeraFLOPS/s & Location & Status & Login\\
@@ -200,13 +218,13 @@
  & Name & Peak TF/s & Location & Status & Login\\
 \hline
  \multirow{5}{*}{LONI} & Bluedawg & 0.85 & LaTech & Production & LONI \\
-                                  & Ducky & 0.85 & UNO & 8/31/2011 & LONI\\
+                                  & Ducky & 0.85 & UNO & 9/30/2011 & LONI\\
                                   & Lacumba & 0.85 & Southern & 12/22/2011 & LONI\\
-                                  & Neptune & 0.85 & Tulane & Not accepting jobs & LONI\\
-                                  & Zeke & 0.85 & ULL & 8/31/2011 & LONI\\
+                                  & Neptune & 0.85 & Tulane & 9/30/2011 & LONI\\
+                                  & Zeke & 0.85 & ULL & 9/30/2011 & LONI\\
 \hline
 \multirow{2}{*}{ LSU HPC} & Pelican & 2.6 & LSU & Production & HPC\\
-                                       & Pandora & 6.8 & LSU & Pre-Production & HPC\\
+                                       & Pandora & 6.8 & LSU & Production & HPC\\
 \hline
 \end{tabular}
 \end{center}
@@ -216,16 +234,26 @@
 
 
 \begin{frame}
-\begin{block}{}
+\frametitle{\small Account Management}
+\begin{bblock}{}
 \begin{itemize}
 \item LONI account
 \item[] \url{https://allocations.loni.org}
 \item LSU HPC account
 \item[] \url{https://accounts.hpc.lsu.edu}
 \item All LONI AIX clusters are being decommissioned.
-\item Newest cluster at LSU HPC is Pandora, currently in User Friendly Mode
+\item Newest cluster at LSU HPC is Pandora.
 \end{itemize}
-\end{block}
+\end{bblock}
+
+\begin{eblock}{}
+ \begin{itemize}
+  \item The default Login shell is bash
+  \item Supported Shells: bash, tcsh, ksh, csh \& sh
+  \item Change Login Shell at the profile page
+ \end{itemize}
+\end{eblock}
+
 \end{frame}
 
 \begin{frame}
@@ -255,8 +283,8 @@
 \item Queen Bee 
 \begin{enumerate}
 {\scriptsize
-\item[$\vardiamond$]668 nodes: 8 Intel Xeon cores @ 2.33 GHz
-\item[$\vardiamond$]8 GB RAM
+\item[$\blacklozenge$]668 nodes: 8 Intel Xeon cores @ 2.33 GHz
+\item[$\blackdiamond$]8 GB RAM
 \item[$\vardiamond$]192 TB storage
 }
 \end{enumerate}
@@ -316,6 +344,27 @@
 \end{enumerate}
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{\small Why is Cluster Hardware important?} 
+\begin{columns}
+ \column{5cm}
+\begin{itemize}
+ \item There are numerous different architectures in the HPC world.
+ \item Choose the software to install or use depending on cluster architecture.
+ \begin{enumerate}
+  \item Linux: EM64T, AMD64, X86\_64
+  \item AIX: Power5, Power7
+ \end{enumerate}
+\end{itemize}
+\column{7cm}
+\vspace{-1cm}
+\begin{center}
+\includegraphics[width=\textwidth,clip=true]{namd-down}
+\end{center}
+\end{columns}
+\end{frame}
+
 \begin{frame}
 \frametitle{\small Usage: Max Memory}
 \begin{itemize}
@@ -333,6 +382,7 @@
 
 
 \section{User Environment}
+\subsection{Accessing LONI \& LSU HPC clusters}
 \begin{frame}
 \frametitle{\small Accessing LONI \& LSU HPC clusters}
 \begin{itemize}
@@ -368,6 +418,71 @@
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{\small Connecting to Eric from a Linux box}
+\vspace{-1.5cm}
+\begin{columns}
+\column{12cm}
+\begin{center}
+\includegraphics[width=1.35\textheight,clip=true]{X11-Linux}
+\end{center}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Connecting to Eric from a Mac box}
+\vspace{-1.5cm}
+\begin{columns}
+\column{12cm}
+\begin{center}
+\includegraphics[width=1.35\textheight,clip=true]{X11-mac}
+\end{center}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Connecting to Eric from a Windows box}
+\begin{itemize}
+\item Download and Install
+\begin{enumerate}
+{\scriptsize
+\item X-Server: X-ming \url{http://www.straightrunning.com/XmingNotes/}
+\item SSH Client: Putty \url{http://www.chiark.greenend.org.uk/~sgtatham/putty/}
+\item SSH+SFTP/SCP Client: Bitvise Tunnelier \url{http://www.bitvise.com/tunnelier}
+}
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Start X-ming}
+\begin{center}
+\includegraphics[width=0.2\textwidth,clip=true]{X-ming-desk}
+\includegraphics[width=0.3\textwidth,clip=true]{X-ming-tray}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Putty with X11}
+\begin{center}
+\only<1>{\includegraphics[width=0.5\textwidth,clip=true]{Putty-X11}}
+\only<2>{\includegraphics[width=0.5\textwidth,clip=true]{Putty-Login}}
+\only<3>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-SSH-Key}}
+\only<4>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-UID}}
+\only<5>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-Loggedin}}
+\only<6>{\includegraphics[width=0.75\textheight,clip=true]{Putty-Jmol}}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Configure Tunnelier/SSH Client to Tunnel X11 Connections}
+\begin{center}
+\only<1>{\includegraphics[width=0.75\textwidth,clip=true]{SSH-Secure-Shell}}
+\only<2>{\includegraphics[width=0.75\textheight,clip=true]{Tunnelier-X11}}
+\end{center}
+\end{frame}
+
+\subsection{File Systems}
 \begin{frame}
 \frametitle{\small File Systems}
 \scriptsize{
@@ -438,6 +553,36 @@ HPC AIX & /home/\$USER & 5GB & /work/\$USER & 50GB & /scratch/local\\
 }
 \end{frame}
 
+\begin{frame}
+\begin{eblock}{Exercise 1}
+ \begin{itemize}
+  \item Log in to any cluster
+  \item Check your disk quota
+  \begin{enumerate}
+    \item Linux: \texttt{showquota}
+    \item AIX: \texttt{quota}
+  \end{enumerate}
+  \item Copy the traininglab directory
+  \item[] \texttt{cp -r /home/apacheco/traininglab .}
+ \end{itemize}
+\end{eblock}
+
+\begin{ablock}{}
+ \begin{itemize}
+  \item If you are not familiar with working on a Linux/Unix system
+  \begin{enumerate}
+   \item Loni Moodle course @ \url{https://docs.loni.org/moodle}: HPC104 or HPC105
+  \end{enumerate}
+
+ \end{itemize}
+
+\end{ablock}
+
+
+\end{frame}
+
+
+\subsection{Software Management}
 \begin{frame}
 \frametitle{\small Managing User Environment}
 \begin{itemize}
@@ -524,6 +669,33 @@ however, it is not suggested that you use these:
 \end{frame}
 
 \begin{frame}[fragile]
+\frametitle{\small Setting up Environment via Softenv: One Time Change}
+\begin{itemize}
+\item Setting up environment variables to use a certain package in the current session only.
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Remove a package: \texttt{soft add <key>}
+\item[$\vardiamond$] Add a package: \texttt{soft add <key>}
+}
+\end{enumerate}
+\end{itemize}
+{\tiny
+\begin{alertblock}{}
+\begin{verbatim}
+[apacheco@eric2 ~]$ which g09
+/usr/local/packages/gaussian09/g09/g09
+[apacheco@eric2 ~]$ soft delete +gaussian-09
+[apacheco@eric2 ~]$ which g09
+/usr/bin/which: no g09 in (/home/apacheco/bin:...
+[apacheco@eric2 ~]$ soft add +gaussian-03
+[apacheco@eric2 ~]$ which g03
+/usr/local/packages/gaussian03/g03/g03
+\end{verbatim}
+\end{alertblock}
+}
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{\small Setting up Environment via Softenv: Permanent Change}
 \begin{itemize}
 \item Setting up the environment variables to use a certain software package(s).
@@ -558,33 +730,6 @@ however, it is not suggested that you use these:
 +cpmd-3.11.1-intel-11.1-mvapich-1.1
 @default
 [apacheco@eric2 ~]$ resoft
-\end{verbatim}
-\end{alertblock}
-}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{\small Setting up Environment via Softenv: One Time Change}
-\begin{itemize}
-\item Setting up environment variables to use a certain package in the current session only.
-\begin{enumerate}
-{\scriptsize
-\item[$\vardiamond$] Remove a package: \texttt{soft add <key>}
-\item[$\vardiamond$] Add a package: \texttt{soft add <key>}
-}
-\end{enumerate}
-\end{itemize}
-{\tiny
-\begin{alertblock}{}
-\begin{verbatim}
-[apacheco@eric2 ~]$ which g09
-/usr/local/packages/gaussian09/g09/g09
-[apacheco@eric2 ~]$ soft delete +gaussian-09
-[apacheco@tezpur1 ~]$ which g09
-/usr/bin/which: no g09 in (/home/apacheco/bin:...
-[apacheco@eric2 ~]$ soft add +gaussian-03
-[apacheco@eric2 ~]$ which g03
-/usr/local/packages/gaussian03/g03/g03
 \end{verbatim}
 \end{alertblock}
 }
@@ -628,6 +773,24 @@ the following will be done to the environment:
 \end{alertblock}
 }
 \end{frame}
+
+\begin{frame}<1,2>
+\begin{eblock}{Exercise 2: Use Softenv}
+ \begin{itemize}
+  \only<1->{\item Find the key for VISIT (a visualization package).}
+  \visible<2>{\item[] \texttt{softenv -k visit}}
+  \only<1->{\item Check what variables are set through the key.}
+  \visible<2>{\item[] \texttt{soft-dbq +visit}}
+  \only<1->{\item Set up your environment to use VISIT.}
+  \visible<2>{\item[] \texttt{soft add +visit}}
+  \only<1->{\item Check if the variables are correctly set by using \texttt{which visit}.}
+  \visible<2>{\item[] \texttt{/usr/local/packages/visit/bin/visit}}
+ \end{itemize}
+
+\end{eblock}
+
+\end{frame}
+
 
 \begin{frame}
 \frametitle{\small Compilers}
@@ -736,11 +899,10 @@ rm -f mpif.h
 \item[$\vardiamond$] Computational Chemistry
 \begin{enumerate}
 \item[$\blacksquare$] Amber, CPMD, Gaussian, GAMESS, Gromacs, LAMMPS, NAMD, NWCHEM
-\item[$\blacksquare$] {\color{red}For DFT Workshop additional packages on Eric: LMTO, NCIplot, Quantum Espresso}
 \end{enumerate}
 \item[$\vardiamond$] Visualization
 \begin{enumerate}
-\item[$\blacksquare$] GaussView, {\color{red}Jmol}, VisIt, VMD, {\color{red}XCrySDen}, 
+\item[$\blacksquare$] GaussView, VisIt, VMD 
 \end{enumerate}
 \item[$\vardiamond$] Profiling/debugging tools
 \begin{enumerate}
@@ -752,30 +914,32 @@ rm -f mpif.h
 \end{frame}
 
 \begin{frame}
-\frametitle{\small Exercise: Build SOFTENV Environment for workshop}
-\begin{itemize}
-\item Find softenv key for various packages that you will use for the current workshop
-\begin{enumerate}
-{\scriptsize
-\item[$\vardiamond$] Gaussian 09
-\item[$\vardiamond$] LMTO
-\item[$\vardiamond$] NCIplot
-\item[$\vardiamond$] Quantum Espresso
-\item[$\vardiamond$] MPI implementation (Quantum Espresso is compiled with mvapich 1.1 and intel 11.1 compiler)
-\item[$\vardiamond$] Visualization Packages: GaussView, Jmol, VMD, XCrysden
-\item[$\vardiamond$] Other packages of interest: CPMD, GAMESS, NWCHEM
-}
-\end{enumerate}
-\item Check if variables are in your path
-\item[]\texttt{echo \$PATH}
-\item[]\texttt{which g09}
-\item[]\texttt{which mpirun}
-\item[]\texttt{which nciplot.x}
-\end{itemize}
+ \begin{eblock}{Exercise 3: Compiling a code}
+  \begin{enumerate}
+  \item Serial Code
+  \begin{itemize}
+   \only<1->{\item On Linux cluster, add the soft keys for either Intel (\texttt{+intel-fc-11.1}) or GCC (\texttt{+gcc-4.3.2})}
+   \only<1->{\item Compile \texttt{hello.f90} with a compiler of your choice}
+   \visible<2>{\item[] \texttt{ifort -o hello hello.f90}}
+   \visible<2>{\item[] \texttt{xlf90 -o hello hello.f90}}
+   \only<1->{\item Run the executable from the command line}
+   \visible<2>{\item[] \texttt{./hello}}
+  \end{itemize}
+  \item Parallel Code
+  \begin{itemize}
+   \only<1->{\item On Linux cluster, find the appropriate key for mpi implementation of the above compiler}
+   \only<1->{\item Compile \texttt{hello\_mpi.f90}}
+   \visible<2>{\item[] \texttt{mpif90 -o hellompi hello\_mpi.f90}}
+   \only<1->{\item Do Not run the parallel code, we'll use a script to submit to a job manager}
+  \end{itemize}
+
+  \end{enumerate}
+ \end{eblock}
+
 \end{frame}
 
-
 \section{Job Management}
+\subsection{Queues}
 \begin{frame}
 \frametitle{\small The Cluster Environment}
 \begin{columns}
@@ -945,7 +1109,8 @@ checkpt & & 128 & & 64 & preemptable\\
 \cline{1-1}\cline{3-6}
 preempt & & 64 & \multicolumn{2}{c|}{NA} & Requires permission \\
 \cline{1-1}\cline{3-6}
-priority & & 64  & \multicolumn{2}{c|}{NA} & Requires permission \\\hline 
+priority & & 64 & \multicolumn{2}{c|}{NA} & Requires permission\\
+\hline
 \end{tabular}
 \end{center}
 }
@@ -1045,7 +1210,7 @@ single & 7 days & 64  &   & 32 & Single Node Jobs  \\
 \end{columns}
 \end{frame}
 
-%\section{Job Manager Commands}
+\subsection{Job Manager Commands}
 \begin{frame}
 \frametitle{\small Basic Job Manager Commands}
 \begin{colorblock}{white}{blue!30!black}{black}{blue!15!white}{}
@@ -1143,8 +1308,10 @@ single               unlimited      unlimited    32    64 Queue for single-node 
 \end{columns}
 \end{frame}
 
-\begin{frame}[allowframebreaks]
+\subsection{Job Types}
+\begin{frame}[overlayarea]
 \frametitle{\small Job Types}
+\only<1>{
 \begin{colorblock}{white}{blue!30!black}{black}{blue!15!white}{Interactive Jobs}
 \begin{itemize}
 \item Set up an interactive environment on compute nodes for users
@@ -1159,6 +1326,8 @@ single               unlimited      unlimited    32    64 Queue for single-node 
 \item To enable X-forwarding: add \texttt{-X}
 \end{itemize}
 \end{colorblock}
+}
+\only<2>{
 \begin{colorblock}{white}{blue!30!black}{black}{blue!15!white}{Batch Jobs}
 \begin{itemize}
 \item Executed using a batch script without user intervention
@@ -1171,8 +1340,10 @@ single               unlimited      unlimited    32    64 Queue for single-node 
 \item[] \texttt{llsubmit <job script>}
 \end{itemize}
 \end{colorblock}
+}
 \end{frame}
 
+\subsection{Job Submission Scripts}
 \begin{frame}[fragile]
 \frametitle{\small PBS Job Script: Parallel Jobs}
 \begin{columns}
@@ -1187,7 +1358,7 @@ single               unlimited      unlimited    32    64 Queue for single-node 
 #PBS -o <file name>
 #PBS -e <file name>
 #PBS -q checkpt	
-#PBS -A <loni_allocation
+#PBS -A <loni_allocation>
 #PBS -m e
 #PBS -M <email address>
 
@@ -1237,7 +1408,7 @@ shell commands
 #PBS -o <file name>
 #PBS -e <file name>
 #PBS -q single	
-#PBS -A <loni_allocation
+#PBS -A <loni_allocation>
 #PBS -m e
 #PBS -M <email address>
 
@@ -1396,6 +1567,18 @@ shell commands
 \end{frame}
 
 \begin{frame}
+ \begin{eblock}{Exercise 4: Job Submission}
+  \begin{itemize}
+   \item Write a job submission script to execute the \texttt{hello\_mpi} program.
+   \item Submit the script to the job manager.
+  \end{itemize}
+ \end{eblock}
+
+\end{frame}
+
+
+\subsection{Job Monitoring \& Manipulation}
+\begin{frame}
 \frametitle{\small Job Monitoring}
 \begin{colorblock}{white}{blue!30!black}{black}{blue!15!white}{Linux Clusters}
 \begin{itemize}
@@ -1528,6 +1711,7 @@ ian1.97643.0    nserno          R     MP5L       1    07/17 13:20  07/17 16:51
 \end{colorblock}
 \end{frame}
 
+\section{HPC Help}
 \begin{frame}
 \frametitle{\small Additional Help}
 \begin{itemize}
@@ -1550,13 +1734,6 @@ ian1.97643.0    nserno          R     MP5L       1    07/17 13:20  07/17 16:51
 \end{enumerate}
 \end{enumerate}
 \end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{\small Using qsub with advanced reservation}
-\begin{block}{}
-qsub -W x=FLAGS:ADVRES:\{reservation name\}
-\end{block}
 \end{frame}
 \end{document}
 
