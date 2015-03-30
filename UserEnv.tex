@@ -24,7 +24,7 @@
 \usepackage{hyperref}
 \usepackage{movie15}
 \hypersetup{
-  pdftitle={LONI Programming Environment},
+  pdftitle={HPC User Environment, Job Management with PBS/Loadleveler},
   pdfauthor={Alexander B. Pacheco, User Services Consultant, Louisiana State University}
 }
 %\usepackage{movie15}
@@ -36,8 +36,6 @@
 
 \usepackage[english]{babel}
 \usepackage[latin1]{inputenc}
-\usepackage{times}
-\usepackage{amsmath}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \definecolor{DarkGreen}{rgb}{0.0,0.3,0.0}
@@ -46,7 +44,9 @@
 \definecolor{indigo}{rgb}{0.41,0.1,0.0}
 \definecolor{seagreen}{rgb}{0.1,1.0,0.1}
 \DeclareSymbolFont{extraup}{U}{zavm}{m}{n}
-\DeclareMathSymbol{\vardiamond}{\mathalpha}{extraup}{87}
+%\DeclareMathSymbol{\vardiamond}{\mathalpha}{extraup}{87}
+\newcommand*\vardiamond{\textcolor{tigerspurple}{%
+  \ensuremath{\blacklozenge}}}
 \newcommand*\up{\textcolor{green}{%
   \ensuremath{\blacktriangle}}}
 \newcommand*\down{\textcolor{red}{%
@@ -81,18 +81,18 @@
 {\end{beamerboxesrounded}}
 
 
-\title{LONI Programming Environment}
+\title{HPC User Environment, Job Management with PBS/Loadleveler}
 
 
 \author[Alex Pacheco]{\large{Alexander~B.~Pacheco}}
        
 %\institute[High Performance Computing @ Louisiana State University - http://www.hpc.lsu.edu] {\inst{}\footnotesize{User Services Consultant\\LSU HPC \& LONI\\sys-help@loni.org}}
-\institute[LONI HPC Workshop, Xavier University of Louisiana - New Orleans] {\inst{}\footnotesize{User Services Consultant\\LSU HPC \& LONI\\sys-help@loni.org}}
+\institute[HPC Training: Fall 2012] {\inst{}\footnotesize{User Services Consultant\\LSU HPC \& LONI\\sys-help@loni.org}}
 
-\date[{Mar 21, 2012\hspace{2cm}}]{\scriptsize{LONI HPC Workshop\\Xavier University of Louisiana\\New Orleans\\Mar 21, 2012}}
+\date[\hfill{September 12, 2012\hspace{2cm}\insertframenumber/\inserttotalframenumber}]{\scriptsize{HPC Training Fall 2012\\Louisiana State University\\Baton Rouge\\September 12, 2012}}
      
 \subject{Talks}
-\keywords{LONI Computing Resources, User Environment, Job Management, PBS, Loadleveler}
+\keywords{LONI \& LSU HPC Computing Resources, User Environment, Job Management, PBS, Loadleveler}
 % This is only inserted into the PDF information catalog. Can be left
 % out. 
 
@@ -110,10 +110,10 @@
 \pgfdeclareimage[height=0.55cm]{university-logo}{LSUGeauxPurp}
 \tllogo{\pgfuseimage{university-logo}}
 % Logo at top right
-\pgfdeclareimage[height=0.6cm]{institute-logo}{PUR_BLK_HOR}
+\pgfdeclareimage[height=0.5cm]{institute-logo}{its-logo}
 \trlogo{\pgfuseimage{institute-logo}}
 % Logo at bottom right
-\pgfdeclareimage[height=0.55cm]{hpc-logo}{CCT}
+\pgfdeclareimage[height=0.5cm]{hpc-logo}{cct-logo}
 \brlogo{\pgfuseimage{hpc-logo}}
 
 % Delete this, if you do not want the table of contents to pop up at
@@ -131,415 +131,491 @@
 
 \frame{\titlepage}
 
-\normalsize
+\footnotesize
 \begin{frame}[label=toc,squeeze]
   \footnotesize
   \frametitle{\small{Outline}}
   \tableofcontents
 \end{frame}
 
-\normalsize
-
 %\part{Introduction}
 \section{Hardware Overview}
 
 \begin{frame}
-  \frametitle{\small LONI \& LSU HPC Clusters}
-  \begin{itemize}
-    \item Two major architectures.
-  \end{itemize}
-  \begin{columns}
-    \column{0.5\textwidth}
-    \begin{colorblock}{white}{blue!30!black}{black}{blue!15!white}{\bf Linux Clusters}
-      \begin{itemize}
-	\item Vendor: Dell
-	\item OS: Red Hat 
-	\item CPU: Intel Xeon
-      \end{itemize}
-    \end{colorblock}
-    \column{0.5\textwidth}
-    \begin{colorblock}{white}{blue!30!black}{black}{blue!15!white}{\bf AIX Clusters}
-      \begin{itemize}
-	\item Vendor: IBM
-	\item OS: AIX 
-	\item CPU: Power 5
-      \end{itemize}
-    \end{colorblock}
-  \end{columns}
-  \vspace{1cm}
-  \begin{itemize}
-    \item The LONI AIX clusters are on a path to decommissioning.
-  \end{itemize}
+\frametitle{\small LONI \& LSU HPC Clusters}
+\begin{itemize}
+\item Two major architectures.
+\end{itemize}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{bblock}{\bf Linux Clusters}
+\begin{itemize}
+\item Vendor: Dell
+\item OS: Red Hat 
+\item CPU: Intel Xeon
+\end{itemize}
+\end{bblock}
+\column{0.5\textwidth}
+\begin{bblock}{\bf AIX Clusters}
+\begin{itemize}
+\item Vendor: IBM
+\item OS: AIX 
+\item CPU: Power 7
+\end{itemize}
+\end{bblock}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-  \scriptsize{
-  \vspace{-0.2cm}
-  \begin{block}{Linux Clusters}
-    \begin{center}
-      \begin{tabular}{|c|c|c|c|c|c|}
-	\hline
-	& Name & Peak TeraFLOPS/s & Location & Status & Login\\
-	\hline
-	\multirow{6}{*}{LONI} & QueenBee & 50.7 & ISB & Production & LONI \\
-                              & Eric & 4.7 & LSU & Production & LONI\\
-                              & Louie & 4.7 & Tulane & Production & LONI\\
-                              & Oliver & 4.7 & ULL & Production & LONI\\
-                              & Painter & 4.7 & LaTech & Production & LONI\\
-                              & Poseidon & 4.7 & UNO & Production & LONI\\
-	\hline
-      \end{tabular}
-    \end{center}
-  \end{block}
-  \begin{block}{AIX Clusters}
-    \begin{center}
-      \def\firstrowcolor{\rowcolor{green}}
-      \def\secondrowcolor{\rowcolor{blue!50}}
-      \def\thirdrowcolor{\rowcolor{tigerspurple!80}}
-      \begin{tabular}{|c|c|c|c|c|c|}
-	\hline
-	& Name & Peak TF/s & Location & Status & Login\\
-	\hline
-	\multirow{5}{*}{LONI} & Bluedawg & 0.85 & LaTech & Production & LONI \\
-                              & Ducky & 0.85 & UNO & Decommissioned & LONI\\
-                              & Lacumba & 0.85 & Southern & Decommissioned & LONI\\
-                              & Neptune & 0.85 & Tulane & Decommissioned & LONI\\
-                              & Zeke & 0.85 & ULL & Decommissioned & LONI\\
-	\hline
-      \end{tabular}
-    \end{center}
-  \end{block}
+\scriptsize{
+\begin{block}{Linux Clusters}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+ & Name & Peak TeraFLOPS/s & Location & Status & Login\\
+\hline
+ \multirow{6}{*}{LONI} & QueenBee & 50.7 & ISB & Production & LONI \\
+                                 & Eric & 4.7 & LSU & Production & LONI\\
+                                 & Louie & 4.7 & Tulane & Production & LONI\\
+                                 & Oliver & 4.7 & ULL & Production & LONI\\
+                                 & Painter & 4.7 & LaTech & Production & LONI\\
+                                 & Poseidon & 4.7 & UNO & Production & LONI\\
+                                 & Satellite & 4.7 & Southern & Unknown & LONI\\
+\hline
+\multirow{4}{*}{ LSU HPC} & Tezpur & 15.3 & LSU & Production & HPC\\
+                                       & Philip & 3.5 & LSU & Production & HPC\\
+\cline{2-6}
+                          & \multirow{2}{*}{SuperMike} & 146 (CPU) & \multirow{2}{*}{LSU} & Coming & \multirow{2}{*}{HPC} \\
+                          &                            & 66 (GPU) & & Soon & \\
+\hline
+\end{tabular}
+\end{center}
+\end{block}
+\begin{block}{AIX Clusters}
+\begin{center}
+\def\firstrowcolor{\rowcolor{green}}
+\def\secondrowcolor{\rowcolor{blue!50}}
+\def\thirdrowcolor{\rowcolor{tigerspurple!80}}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+ & Name & Peak TF/s & Location & Status & Login\\
+\hline
+LSU HPC & Pandora & 6.8 & LSU & Production & HPC\\
+\hline
+\end{tabular}
+\end{center}
+\end{block}
+}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\small Account Management}
+\begin{bblock}{}
+\begin{itemize}
+\item LONI account
+\item[] \url{https://allocations.loni.org}
+\item LSU HPC account
+\item[] \url{https://accounts.hpc.lsu.edu}
+\item Newest cluster in production at LSU HPC is Pandora.
+\item Newest cluster at LSU HPC is SuperMike, estimated to be online sometime in Fall 2012. 
+\end{itemize}
+\end{bblock}
+
+\begin{eblock}{}
+ \begin{itemize}
+  \item The default Login shell is bash
+  \item Supported Shells: bash, tcsh, ksh, csh \& sh
+  \item Change Login Shell at the profile page
+ \end{itemize}
+\end{eblock}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Cluster Architecture}
+\begin{columns}
+\column{4cm}
+\begin{itemize}
+\item A cluster is a group of computers (nodes) that works together closely
+\item Type of nodes
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Head node
+\item[$\vardiamond$] Compute node
+}
+\end{enumerate}
+\end{itemize}
+\column{7cm}
+\begin{center}
+\includegraphics[width=1.05\textwidth,clip=true]{cluster}
+\end{center}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Cluster Hardware}
+\vspace{-0.3cm}
+\begin{itemize}
+\item Queen Bee 
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]668 nodes: 8 Intel Xeon cores @ 2.33 GHz
+\item[$\vardiamond$]8 GB RAM
+\item[$\vardiamond$]192 TB storage
+}
+\end{enumerate}
+\item Other LONI clusters
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]128 nodes: 4 Intel Xeons cores @ 2.33 GHz
+\item[$\vardiamond$]4 GB RAM
+\item[$\vardiamond$]9 TB storage
+}
+\end{enumerate}
+\item Tezpur
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]360 nodes, 4 Intel Xeon cores @ 2.33 GHz
+\item[$\vardiamond$]4 GB RAM
+\item[$\vardiamond$]32 TB storage
+}
+\end{enumerate}
+\item Philip
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]37 nodes, 8 Intel Xeon cores @ 2.93 GHz
+\item[$\vardiamond$]24/48/96 GB RAM
+\item[$\vardiamond$]Shares storage with Tezpur
+}
+\end{enumerate}
+\item Pandora
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]8 Power7 nodes, 8 IBM Power7 processors @ 3.33 GHz
+\item[$\vardiamond$]128 GB RAM
+\item[$\vardiamond$]19 TB storage
+}
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small GPU nodes on Philip}
+\begin{eblock}{}
+\begin{itemize}
+\item 2  Philip nodes with 3  GPU's each.
+\begin{itemize}
+{\scriptsize
+\item Intel Xeon X5650
+\begin{enumerate}
+{\footnotesize
+\item[$\vardiamond$] 2.66GHz Dual Hexa-core with hyperthreading: 12 cores, 24 threads
+\item[$\vardiamond$] Memory : 48GB
+\item[$\vardiamond$] L3 Cache: 12MB
+}
+\end{enumerate}
+\item Tesla M2070
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] 448 CUDA cores (14 Multiprocessor $\times$ 32 CUDA Cores/MP )
+\item[$\vardiamond$] GPU Clock Speed: 1.15GHz
+\item[$\vardiamond$] Total Memory: 5.25GB
+}
+\end{enumerate}
+}
+\end{itemize}
+\item Compilers: CUDA 4.0, PGI Accelerator
+\item Infiniband Interconnect between the two nodes.
+\end{itemize}
+\end{eblock}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\small SuperMike}
+  \begin{eblock}{}
+    \begin{itemize}
+      \item 146 CPU TFlops and 66 double-precision GPU TFlops,
+      \item 382 standard nodes, dual Intel Sandy Bridge CPUs with 32GB RAM (16 cores per node),
+      \item 50 GPU nodes, dual Intel Sandy Bridge CPUs with 64GB RAM and dual NVIDIA Tesla M2090 6GB GPUs,
+      \item 8 big memory nodes with 256GB RAM, capable of aggregation into a single virtual symmetric processing (vSMP) node using ScaleMP,
+      \item Mellanox Infiniband QDR network of 2:1 over-subscription.
+    \end{itemize}
+  \end{eblock}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Why is Cluster Hardware important?} 
+\begin{columns}
+ \column{5cm}
+\begin{itemize}
+ \item There are numerous different architectures in the HPC world.
+ \item Choose the software to install or use depending on cluster architecture.
+ \begin{enumerate}
+  {\scriptsize
+  \item Linux: EM64T, AMD64, X86\_64
+  \item AIX: Power7
   }
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{\small Account Management}
-  \begin{bblock}{Getting an Account}
-    \begin{itemize}
-      \item LONI account
-      \item[] \url{https://allocations.loni.org}
-%       \item LSU HPC account
-%       \item[] \url{https://accounts.hpc.lsu.edu}
-      \item Request Allocations
-      \item[] \url{https://allocations.loni.org}
-      \item All LONI AIX clusters are being decommissioned.
-%       \item Newest cluster at LSU HPC is Pandora.
-    \end{itemize}
-  \end{bblock}
-
-  \begin{eblock}{Login Shell}
-    \begin{itemize}
-      \item The default Login shell is bash
-      \item Supported Shells: bash, tcsh, ksh, csh \& sh
-      \item Change Login Shell at the profile page
-    \end{itemize}
-   \end{eblock}
+ \end{enumerate}
+\end{itemize}
+\column{7cm}
+\vspace{-1cm}
+\begin{center}
+\includegraphics[width=\textwidth,clip=true]{namd-down}
+\end{center}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Cluster Architecture}
-  \begin{columns}
-    \column{4cm}
-    \begin{itemize}
-      \item A cluster is a group of computers (nodes) that works together closely
-      \item Type of nodes
-      \begin{enumerate}
-	{\scriptsize
-	\item[$\vardiamond$] Head node
-	\item[$\vardiamond$] Compute node
-	}
-      \end{enumerate}
-    \end{itemize}
-    \column{7cm}
-    \begin{center}
-      \includegraphics[width=1.05\textwidth,clip=true]{cluster}
-    \end{center}
-  \end{columns}
-\end{frame}
-
-\begin{frame}
-  \frametitle{\small Cluster Hardware}
-  \begin{itemize}
-    \item Queen Bee 
-    \begin{enumerate}
-      {\scriptsize
-      \item[$\vardiamond$]668 nodes: 8 Intel Xeon cores @ 2.33 GHz
-      \item[$\vardiamond$]8 GB RAM
-      \item[$\vardiamond$]192 TB storage
-      }
-    \end{enumerate}
-    \item Other LONI Linux clusters
-    \begin{enumerate}
-      {\scriptsize
-      \item[$\vardiamond$]128 nodes: 4 Intel Xeons cores @ 2.33 GHz
-      \item[$\vardiamond$]4 GB RAM
-      \item[$\vardiamond$]9 TB storage
-      }
-    \end{enumerate}
-    \item LONI AIX clusters (All except Bluedawg decommissioned)
-    \begin{enumerate}
-      {\scriptsize
-      \item[$\vardiamond$]14 Power5 nodes, 8 IBM Power5 processors @ 1.9 GHz per node
-      \item[$\vardiamond$]16 GB RAM
-      \item[$\vardiamond$]280 GB storage
-      }
-    \end{enumerate}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{\small Why is Cluster Hardware important?} 
-  \begin{columns}
-    \column{5cm}
-    \begin{itemize}
-      \item There are numerous different architectures in the HPC world.
-      \item Choose the software to install or use depending on cluster architecture.
-      \begin{enumerate}
-	\item Linux: EM64T, AMD64, X86\_64
-	\item AIX: Power5, Power7
-      \end{enumerate}
-    \end{itemize}
-    \column{7cm}
-    \vspace{-1cm}
-    \begin{center}
-      \includegraphics[width=\textwidth,clip=true]{namd-down}
-    \end{center}
-  \end{columns}
-\end{frame}
-
-\begin{frame}
-  \frametitle{\small Usage: Max Memory}
-  \begin{itemize}
-    \item The amount of installed memory less the amount that is used by the operating system and other utilities 
-    \item Max amount per node
-    \begin{enumerate}
-      {\scriptsize
-      \item[$\vardiamond$]Linux clusters: $\sim$6 GB for Queen Bee, $\sim$3 GB for others
-      \item[$\vardiamond$]AIX clusters: $\sim$13 GB 
-      }
-    \end{enumerate}
-  \end{itemize}
+\frametitle{\small Usage: Max Memory}
+\begin{itemize}
+\item The amount of installed memory less the amount that is used by the operating system and other utilities 
+\item Max amount per node
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]Linux clusters: $\sim$6 GB for Queen Bee, $\sim$3 GB for others
+\item[$\vardiamond$]Tezpur:$\sim$3 GB
+\item[$\vardiamond$]Philip:$\sim$22 GB for regular nodes, $\sim$ 45 or 92 GB for high memory nodes.
+\item[$\vardiamond$]Pandora:$\sim$125 GB
+\item[$\bigstar$] {\color{red}Rule of Thumb: Leave about 1-2 GB for the OS to run}
+}
+\end{enumerate}
+\end{itemize}
 \end{frame}
 
 
 \section{User Environment}
-\subsection{Accessing LONI HPC clusters}
+\subsection{Accessing LONI \& LSU HPC clusters}
 \begin{frame}
-  \frametitle{\small Accessing LONI clusters}
-  \begin{itemize}
-    \item LONI Host name: \texttt{<cluster name>.loni.org}
-    \begin{itemize}
-      \item[$\bigstar$] Eric: eric.loni.org
-    \end{itemize}
-    \item Use ssh to connect
-    \begin{itemize}
-      \item[$\bigstar$] $\ast$nix and Mac: \texttt{ssh <host name>}
-      \item[$\bigstar$] Windows: use Putty, Secure Shell Client or Bitvise Tunnelier
-    \end{itemize}
-    \item The default Login shell is bash
-    \item Supported shells: bash, tcsh, ksh, csh \& sh
-    \item Change the login shell at the profile page
-    \begin{enumerate}
-      {\scriptsize
-      \item[$\vardiamond$] LONI: \url{https://allocations.loni.org}
-      }
-    \end{enumerate}
-    \item Reset your password
-    \begin{enumerate}
-      {\scriptsize
-      \item[$\vardiamond$] LONI: \url{https://allocations.loni.org/user\_reset.php}
-      }
-    \end{enumerate}
-  \end{itemize}
+\frametitle{\small Accessing LONI \& LSU HPC clusters}
+\begin{itemize}
+\item LONI Host name: \texttt{<cluster name>.loni.org}
+\begin{itemize}
+\item[$\bigstar$] Eric: eric.loni.org
+\end{itemize}
+\item LSU HPC Host name: \texttt{<cluster name>.hpc.lsu.edu}
+\begin{itemize}
+\item[$\bigstar$] Tezpur: tezpur.hpc.lsu.edu
+\end{itemize}
+\item Use ssh to connect
+\begin{itemize}
+\item[$\bigstar$] $\ast$nix and Mac: \texttt{ssh <host name>}
+\item[$\bigstar$] Windows: use Putty, Secure Shell Client or Bitvise Tunnelier
+\end{itemize}
+\item The default Login shell is bash
+\item Supported shells: bash, tcsh, ksh, csh \& sh
+\item Change the login shell at the profile page
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] LONI: \url{https://allocations.loni.org}
+\item[$\vardiamond$] LSU HPC: \url{https://accounts.hpc.lsu.edu}
+}
+\end{enumerate}
+\item Reset your password
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] LONI: \url{https://allocations.loni.org/user\_reset.php}
+\item[$\vardiamond$] LSU HPC: \url{https://accounts.hpc.lsu.edu/user\_reset.php} 
+}
+\end{enumerate}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Connecting to Eric from a Linux box}
-  \vspace{-0.5cm}
-  \begin{columns}
-    \column{12cm}
-    \begin{center}
-      \includegraphics[width=1.35\textheight,clip=true]{X11-Linux}
-    \end{center}
-  \end{columns}
+\frametitle{\small Connecting to Eric from a Linux box}
+\begin{columns}
+\column{12cm}
+\begin{center}
+\includegraphics[width=1.35\textheight,clip=true]{X11-Linux}
+\end{center}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Connecting to Eric from a Mac box}
-  \vspace{-0.5cm}
-  \begin{columns}
-    \column{12cm}
-    \begin{center}
-      \includegraphics[width=1.35\textheight,clip=true]{X11-mac}
-    \end{center}
-  \end{columns}
+\frametitle{\small Connecting to Eric from a Mac box}
+\begin{columns}
+\column{12cm}
+\begin{center}
+\includegraphics[width=1.35\textheight,clip=true]{X11-mac}
+\end{center}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Connecting to Eric from a Windows box}
-  \begin{itemize}
-    \item Download and Install
-    \begin{enumerate}
-      {\scriptsize
-      \item SSH Client: Putty \url{http://www.chiark.greenend.org.uk/~sgtatham/putty/}
-      \item SSH+SFTP/SCP Client: Bitvise Tunnelier \url{http://www.bitvise.com/tunnelier}
-      \item X-Server (if needed): X-ming \url{http://www.straightrunning.com/XmingNotes/}
-      }
-    \end{enumerate}
-  \end{itemize}
+\frametitle{\small Connecting to Eric from a Windows box}
+\begin{itemize}
+\item Download and Install
+\begin{enumerate}
+{\scriptsize
+\item X-Server: X-ming \url{http://www.straightrunning.com/XmingNotes/}
+\item SSH Client: Putty \url{http://www.chiark.greenend.org.uk/~sgtatham/putty/}
+\item SSH+SFTP/SCP Client: Bitvise Tunnelier \url{http://www.bitvise.com/tunnelier}
+}
+\end{enumerate}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Start X-ming}
-  \begin{center}
-    \includegraphics[width=0.2\textwidth,clip=true]{X-ming-desk}
-    \includegraphics[width=0.3\textwidth,clip=true]{X-ming-tray}
-    \end{center}
+\frametitle{\small Start X-ming}
+\begin{center}
+\includegraphics[width=0.2\textwidth,clip=true]{X-ming-desk}
+\includegraphics[width=0.3\textwidth,clip=true]{X-ming-tray}
+\end{center}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Putty with X11}
-  \begin{center}
-    \only<1>{\includegraphics[width=0.5\textwidth,clip=true]{Putty-X11}}
-    \only<2>{\includegraphics[width=0.5\textwidth,clip=true]{Putty-Login}}
-    \only<3>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-SSH-Key}}
-    \only<4>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-UID}}
-    \only<5>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-Loggedin}}
-    \only<6>{\includegraphics[width=0.75\textheight,clip=true]{Putty-Jmol}}
-  \end{center}
+\frametitle{\small Putty with X11}
+\begin{center}
+\only<1>{\includegraphics[width=0.5\textwidth,clip=true]{Putty-X11}}
+\only<2>{\includegraphics[width=0.5\textwidth,clip=true]{Putty-Login}}
+\only<3>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-SSH-Key}}
+\only<4>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-UID}}
+\only<5>{\includegraphics[width=0.75\textwidth,clip=true]{Putty-Loggedin}}
+\only<6>{\includegraphics[width=0.75\textheight,clip=true]{Putty-Jmol}}
+\end{center}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Configure Tunnelier/SSH Client to Tunnel X11 Connections}
-  \begin{center}
-    \only<1>{\includegraphics[width=0.75\textwidth,clip=true]{SSH-Secure-Shell}}
-    \only<2>{\includegraphics[width=0.75\textheight,clip=true]{Tunnelier-X11}}
-  \end{center}
+\frametitle{\small Configure Tunnelier/SSH Client to Tunnel X11 Connections}
+\begin{center}
+\only<1>{\includegraphics[width=0.75\textwidth,clip=true]{SSH-Secure-Shell}}
+\only<2>{\includegraphics[width=0.75\textheight,clip=true]{Tunnelier-X11}}
+\end{center}
 \end{frame}
 
 \subsection{File Systems}
 \begin{frame}
-  \frametitle{\small File Systems}
-  \scriptsize{
-  \begin{columns}
-    \column{11cm}
-    \begin{block}{}
-      \begin{center}
-	\begin{tabular}{|c|p{1.5cm}|c|c|p{2.5cm}|}
-	  \hline
-	  & Distributed File System & Throughput & File life time & Best used for \\
-	  \hline
-	  {Home} & Yes & Low & Unlimited & {Code in development, compiled executable}\\ 
-	  \hline
-	  Work & Yes & High & 30 days & Job input/output \\
-	  \hline
-	  {Local Scratch} & No & & Job Duration & Temporary files \\
-	  \hline
-	\end{tabular}
-      \end{center}
-    \end{block}
-  \end{columns}
-  }
-  \begin{itemize}
-    \item {\footnotesize Tips}
-    \begin{enumerate}
-      \item[$\vardiamond$] Never write job output to your home directory
-      \item[$\vardiamond$] Do not write temporary files to /tmp, use local scratch or work space
-      \item[$\vardiamond$] Work space is not for long term storage. Files are purged peridocally
-      \item[$\vardiamond$] Use \texttt{rmpurge} to delete large amount of files.
-    \end{enumerate}
-  \end{itemize}
+\frametitle{\small File Systems}
+\scriptsize{
+\begin{columns}
+\column{11cm}
+\begin{block}{}
+\begin{center}
+\begin{tabular}{|c|p{1.5cm}|c|c|p{2.5cm}|}
+\hline
+& Distributed File System & Throughput & File life time & Best used for \\
+\hline
+{Home} & Yes & Low & Unlimited & {Code in development, compiled executable}\\ 
+\hline
+Work & Yes & High & 30 days & Job input/output \\
+\hline
+{Local Scratch} & No & & Job Duration & Temporary files \\
+\hline
+\end{tabular}
+\end{center}
+\end{block}
+\end{columns}
+}
+\begin{itemize}
+\item {\footnotesize Tips}
+\begin{enumerate}
+\item[$\vardiamond$] Never write job output to your home directory
+\item[$\vardiamond$] Do not write temporary files to /tmp, use local scratch or work space
+\item[$\vardiamond$] Work space is not for long term storage. Files are purged peridocally
+\item[$\vardiamond$] Use \texttt{rmpurge} to delete large amount of files.
+\end{enumerate}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Disk Quota}
-  {\scriptsize
-  \begin{columns}
-    \column{12cm}
-    \begin{block}{}
-      \begin{center}
-	\begin{tabular}{|c|c|c|c|c|c|}
-	  \hline
-	  \multirow{2}{*}{Cluster} & \multicolumn{2}{c|}{Home} & \multicolumn{2}{c|}{Work} & Scratch \\
-	  \cline{2-6}
-	  & Access Point & Quota & Access Point & Quota & Access Point \\
-	  \hline
-	  LONI Linux & /home/\$USER & 5GB & /scratch/\$USER & 100GB & /var/scratch\\
-	  \hline
-	  LONI AIX & /home/\$USER & 500MB & /work/default/\$USER & 20GB & /var/scratch\\
-	  \hline
-% 	  HPC Linux & /home/\$USER & 5GB & /work/\$USER & NA & /var/scratch\\
-% 	  \hline
-% 	  HPC AIX & /home/\$USER & 5GB & /work/\$USER & 50GB & /scratch/local\\
-% 	  \hline
-	\end{tabular}
-      \end{center}
-    \end{block}
-  \end{columns}
-  }
-  {\footnotesize
-  \begin{itemize}
-    \item No quota is enforced on the work space of QueenBee
-    \item Work directory is created within an hour of first login
-    \item Check current disk usage
-    \item[] Linux: \texttt{showquota}
-    \item[] AIX: \texttt{quota}
-   \end{itemize}
-  }
+\frametitle{\small Disk Quota}
+{\scriptsize
+\begin{columns}
+\column{12cm}
+\begin{block}{}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\multirow{2}{*}{Cluster} & \multicolumn{2}{c|}{Home} & \multicolumn{2}{c|}{Work} & Scratch \\
+\cline{2-6}
+ & Access Point & Quota & Access Point & Quota & Access Point \\
+\hline
+LONI Linux & /home/\$USER & 5GB & /scratch/\$USER & 100GB & /var/scratch\\
+\hline
+HPC Linux & /home/\$USER & 5GB & /work/\$USER & NA & /var/scratch\\
+\hline
+HPC AIX & /home/\$USER & 5GB & /work/\$USER & 50GB & /scratch/local\\
+\hline
+\end{tabular}
+\end{center}
+\end{block}
+\end{columns}
+}
+{\footnotesize
+\begin{itemize}
+\item No quota is enforced on the work space of QueenBee
+\item Work directory is created within an hour of first login
+\item Check current disk usage
+\item[$\vardiamond$] Linux: \texttt{showquota}
+\item[$\vardiamond$] AIX: \texttt{quota}
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Exercise 1}
-  \begin{eblock}{}
-    \begin{itemize}
-      \item Log in to any cluster
-      \item Check your disk quota
-      \begin{enumerate}
-	\item Linux: \texttt{showquota}
-	\item AIX: \texttt{quota}
-      \end{enumerate}
-      \item Copy the traininglab directory
-      \item[] \texttt{cp -r /home/apacheco/traininglab .}
-    \end{itemize}
-  \end{eblock}
+\begin{eblock}{Exercise 1}
+ \begin{itemize}
+  \item Log in to any cluster
+  \item Check your disk quota
+  \begin{enumerate}
+    {\scriptsize
+    \item Linux: \texttt{showquota}
+    \item AIX: \texttt{quota}
+    }
+  \end{enumerate}
+  \item Copy the traininglab directory
+  \item[] \texttt{cp -r /home/apacheco/traininglab .}
+ \end{itemize}
+\end{eblock}
 
-  \begin{ablock}{}
-    \begin{itemize}
-      \item If you are not familiar with working on a Linux/Unix system
-      \begin{enumerate}
-	\item Loni Moodle course @ \url{https://docs.loni.org/moodle}: HPC104 or HPC105
-      \end{enumerate}
-    \end{itemize}
-  \end{ablock}
+\begin{ablock}{}
+ \begin{itemize}
+  \item If you are not familiar with working on a Linux/Unix system
+  \begin{enumerate}
+   {\scriptsize
+   \item HPC Training Next Week (Sep 19, 2012) Introduction to Linux.
+   \item HPC Training Week after next (Sep 26, 2012) Bash Shell Scripting.
+   \item Loni Moodle course @ \url{https://docs.loni.org/moodle}: HPC104 or HPC105.
+   }
+  \end{enumerate}
+
+ \end{itemize}
+
+\end{ablock}
+
+
 \end{frame}
 
 
 \subsection{Software Management}
 \begin{frame}
-  \frametitle{\small Managing User Environment}
-  \begin{itemize}
-    \item Environment variables
-    \begin{enumerate}
-      \item[$\vardiamond$]PATH: where to look for executables
-      \item[$\vardiamond$]LD\_LIBRARY\_PATH: where to look for shared libraries
-      \item[$\vardiamond$]Other custom environment variables needed by various software
-    \end{enumerate}
-    \item {\bf SOFTENV} is a software that is used to set up these environment variables on all the clusters
-    \begin{enumerate}
-      \item[$\vardiamond$]More convenient than setting numerous environment variables in .bashrc or .cshrc
-    \end{enumerate}
-  \end{itemize}
+\frametitle{\small Managing User Environment}
+\begin{itemize}
+\item Environment variables
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]PATH: where to look for executables
+\item[$\vardiamond$]LD\_LIBRARY\_PATH: where to look for shared libraries
+\item[$\vardiamond$]Other custom environment variables needed by various software
+}
+\end{enumerate}
+\item {\bf SOFTENV} is a software that is used to set up these environment variables on all the clusters
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]More convenient than setting numerous environment variables in .bashrc or .cshrc
+}
+\end{enumerate}
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{\small Listing All packages}
-  \begin{itemize}
-    \item Command \texttt{softenv} lists all packages that are managed by {\bf SOFTENV}
-  \end{itemize}
-  {\tiny
-  \begin{alertblock}{}
-    \begin{verbatim}
+\frametitle{\small Listing All packages}
+\begin{itemize}
+\item Command \texttt{softenv} lists all packages that are managed by {\bf SOFTENV}
+\end{itemize}
+{\tiny
+\begin{ablock}{}
+\begin{verbatim}
 [apacheco@eric2 ~]$ softenv
 SoftEnv version 1.6.2
 ...
@@ -561,19 +637,19 @@ These are the keywords explicitly available:
     +NAMD-2.7b2-intel-11.1-mvapich-1.1
                                    @types: Applications @name: NAMD @version:
                                      ...
-    \end{verbatim}
-  \end{alertblock}
-  }
+\end{verbatim}
+\end{ablock}
+}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{\small Searching for a Specific Package}
-  \begin{itemize}
-    \item Use \texttt{-k} option with \texttt{softenv}
-  \end{itemize}
-  {\tiny
-  \begin{alertblock}{}
-    \begin{verbatim}
+\frametitle{\small Searching for a Specific Package}
+\begin{itemize}
+\item Use \texttt{-k} option with \texttt{softenv}
+\end{itemize}
+{\tiny
+\begin{ablock}{}
+\begin{verbatim}
 [apacheco@eric2 ~]$ softenv -k gaussian
 SoftEnv version 1.6.2
 ...
@@ -596,25 +672,25 @@ These are the keywords explicitly available:
 
 These are the keywords that are part of the software tree,
 however, it is not suggested that you use these:
-    \end{verbatim}
-  \end{alertblock}
-  }
+\end{verbatim}
+\end{ablock}
+}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{\footnotesize Setting up Environment via Softenv: One Time Change}
-  \begin{itemize}
-    \item Setting up environment variables to use a certain package in the current session only.
-    \begin{enumerate}
-      {\scriptsize
-      \item[$\vardiamond$] Remove a package: \texttt{soft add <key>}
-      \item[$\vardiamond$] Add a package: \texttt{soft add <key>}
-      }
-    \end{enumerate}
-  \end{itemize}
-  {\tiny
-  \begin{alertblock}{}
-    \begin{verbatim}
+\frametitle{\small Setting up Environment via Softenv: One Time Change}
+\begin{itemize}
+\item Setting up environment variables to use a certain package in the current session only.
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Remove a package: \texttt{soft add <key>}
+\item[$\vardiamond$] Add a package: \texttt{soft add <key>}
+}
+\end{enumerate}
+\end{itemize}
+{\tiny
+\begin{ablock}{}
+\begin{verbatim}
 [apacheco@eric2 ~]$ which g09
 /usr/local/packages/gaussian09/g09/g09
 [apacheco@eric2 ~]$ soft delete +gaussian-09
@@ -623,25 +699,25 @@ however, it is not suggested that you use these:
 [apacheco@eric2 ~]$ soft add +gaussian-03
 [apacheco@eric2 ~]$ which g03
 /usr/local/packages/gaussian03/g03/g03
-    \end{verbatim}
-  \end{alertblock}
-  }
+\end{verbatim}
+\end{ablock}
+}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{\footnotesize Setting up Environment via Softenv: Permanent Change}
-  \begin{itemize}
-    \item Setting up the environment variables to use a certain software package(s).
-    \begin{enumerate}
-      {\footnotesize
-      \item[$\vardiamond$] First add the key to \texttt{\$HOME/.soft}.
-      \item[$\vardiamond$] Execute \texttt{resoft} at the command line.
-      }
-    \end{enumerate}
-  \end{itemize}
-  {\tiny
-  \begin{alertblock}{}
-    \begin{verbatim}
+\frametitle{\small Setting up Environment via Softenv: Permanent Change}
+\begin{itemize}
+\item Setting up the environment variables to use a certain software package(s).
+\begin{enumerate}
+{\footnotesize
+\item[$\vardiamond$] First add the key to \texttt{\$HOME/.soft}.
+\item[$\vardiamond$] Execute \texttt{resoft} at the command line.
+}
+\end{enumerate}
+\end{itemize}
+{\tiny
+\begin{ablock}{}
+\begin{verbatim}
 [apacheco@eric2 ~]$ cat .soft
 #   
 # This is the .soft file.
@@ -663,30 +739,30 @@ however, it is not suggested that you use these:
 +cpmd-3.11.1-intel-11.1-mvapich-1.1
 @default
 [apacheco@eric2 ~]$ resoft
-    \end{verbatim}
-  \end{alertblock}
-  }
+\end{verbatim}
+\end{ablock}
+}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{\small Querying a Softenv Key}
-  \begin{itemize}
-    \item \texttt{soft-dbq} shows which variables are set by a SOFTENV key
-  \end{itemize}
-  {\tiny
-  \vspace{-0.2cm}
-  \begin{alertblock}{}
-    \begin{verbatim}
-[apacheco@eric2 ~]$ soft-dbq +amber-11-intel-11.1-mvapich-1.1
+\frametitle{\small Querying a Softenv Key}
+\begin{itemize}
+\item \texttt{soft-dbq} shows which variables are set by a SOFTENV key
+\end{itemize}
+{\tiny
+\begin{ablock}{}
+\begin{verbatim}
+[apacheco@eric2 ~]$ soft-dbq +espresso-4.3.1-intel-11.1-mvapich-1.1
 
 This is all the information associated with
-the key or macro +amber-11-intel-11.1-mvapich-1.1.
+the key or macro +espresso-4.3.1-intel-11.1-mvapich-1.1.
 
 -------------------------------------------
 
-Name: +amber-11-intel-11.1-mvapich-1.1
-Description: @types: Applications @name: Amber @build: amber-11-intel-11.1-mvapich-1.1
- ...
+Name: +espresso-4.3.1-intel-11.1-mvapich-1.1
+Description: @types: Applications @name: Quantum Espresso @version: 4.3.1 @build: ...
+Flags: none
+Groups: none
 Exists on: Linux 
 
 -------------------------------------------
@@ -695,118 +771,131 @@ On the Linux architecture,
 the following will be done to the environment:
 
   The following environment changes will be made:
-    AMBERHOME = /usr/local/packages/amber/11/intel-11.1-mvapich-1.1
-    LD_LIBRARY_PATH = ${LD_LIBRARY_PATH}:/usr/local/compilers/Intel/mkl-10.2/lib/em64t
-    PATH = ${PATH}:/usr/local/packages/amber/11/intel-11.1-mvapich-1.1/exe
+    ESPRESSO_PSEUDO = /usr/local/packages/espresso/4.3.1/intel-11.1-mvapich-1.1/pseudo
+    ESPRESSO_ROOT = /usr/local/packages/espresso/4.3.1/intel-11.1-mvapich-1.1
+    ESPRESSO_TMPDIR = /work/${USER}
+    PATH = ${PATH}:/usr/local/packages/espresso/4.3.1/intel-11.1-mvapich-1.1/bin
 
 -------------------------------------------
-  \end{verbatim}
-  \end{alertblock}
-  }
+
+\end{verbatim}
+\end{ablock}
+}
 \end{frame}
 
 \begin{frame}<1,2>
-  \frametitle{\small Exercise 2: Using Softenv}
-  \begin{eblock}{ }
-    \begin{itemize}
-      \only<1->{\item Find the key for VISIT (a visualization package).}
-      \visible<2>{\item[] \texttt{softenv -k visit}}
-      \only<1->{\item Check what variables are set through the key.}
-      \visible<2>{\item[] \texttt{soft-dbq +visit}}
-      \only<1->{\item Set up your environment to use VISIT.}
-      \visible<2>{\item[] \texttt{soft add +visit}}
-      \only<1->{\item Check if the variables are correctly set by using \texttt{which visit}.}
-      \visible<2>{\item[] \texttt{/usr/local/packages/visit/bin/visit}}
-    \end{itemize}
-  \end{eblock}
+\begin{eblock}{Exercise 2: Use Softenv}
+ \begin{itemize}
+  \only<1->{\item Find the key for VISIT (a visualization package).}
+  \visible<2>{\item[] \texttt{softenv -k visit}}
+  \only<1->{\item Check what variables are set through the key.}
+  \visible<2>{\item[] \texttt{soft-dbq +visit}}
+  \only<1->{\item Set up your environment to use VISIT.}
+  \visible<2>{\item[] \texttt{soft add +visit}}
+  \only<1->{\item Check if the variables are correctly set by using \texttt{which visit}.}
+  \visible<2>{\item[] \texttt{/usr/local/packages/visit/bin/visit}}
+ \end{itemize}
+
+\end{eblock}
+
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{\small Compilers}
-  \begin{bblock}{}
-    \begin{center}
-      \begin{tabular}{|c|c|c|c|c|}
-	\hline
-	\multirow{2}{*}{Language} & \multicolumn{3}{c|}{Linux Cluster} & AIX Clusters\\
-	\cline{2-5}
-	& Intel & PGI & GNU & XL \\
-	\hline
-	Fortran & ifort & pgf77,pgf90 & gfortran & xlf,xlf90\\\hline
-	C & icc & pgcc & gcc & xlc\\\hline
-	C++ & icpc & pgCC & g++ & xlC\\
-	\hline
-      \end{tabular}
-    \end{center}
-  \end{bblock}
-  \begin{itemize}
-    \item Usage: <compiler> <options> <your\_code>
-    \begin{enumerate}
-      \item[$\vardiamond$] Example: icc -O3 -o myexec mycode.c
-    \end{enumerate}
-    \item Some compilers options are architecture specific
-    \begin{enumerate}
-      \item[$\vardiamond$] Linux: EM64T, AMD64 or X86\_64
-      \item[$\vardiamond$] AIX: power5,power7 or powerpc
-    \end{enumerate}
-  \end{itemize}
+\frametitle{\small Compilers}
+\begin{bblock}{}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\multirow{2}{*}{Language} & \multicolumn{3}{c|}{Linux Cluster} & AIX Clusters\\
+\cline{2-5}
+ & Intel & PGI & GNU & XL \\
+\hline
+Fortran & ifort & pgf77,pgf90 & gfortran & xlf,xlf90\\\hline
+C & icc & pgcc & gcc & xlc\\\hline
+C++ & icpc & pgCC & g++ & xlC\\
+\hline
+\end{tabular}
+\end{center}
+\end{bblock}
+\begin{itemize}
+\item Usage: <compiler> <options> <your\_code>
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Example: icc -O3 -o myexec mycode.c
+}
+\end{enumerate}
+\item Some compilers options are architecture specific
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Linux: EM64T, AMD64 or X86\_64
+\item[$\vardiamond$] AIX: power5,power7 or powerpc
+}
+\end{enumerate}
+\end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\small Compilers for MPI programs}
-  \begin{colorblock}{white}{blue!30!black}{black}{blue!15!white}{}
-    \begin{center}
-      \begin{tabular}{|c|c|c|}
-	\hline
-	Language & {Linux Cluster} & AIX Clusters\\
-	\hline
-	Fortran & mpif77,mpif90 & mpxlf,mpxlf90\\\hline
-	C & mpicc & mpcc\\\hline
-	C++ & mpiCC & mpCC\\
-	\hline
-      \end{tabular}
-    \end{center}
-  \end{colorblock}
-  \begin{itemize}
-    \item Usage: <compiler> <options> <your\_code>
+\begin{frame}[allowframebreaks,fragile]
+\frametitle{\small Compilers for MPI programs}
+\begin{bblock}{}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Language & {Linux Cluster} & AIX Clusters\\
+\hline
+Fortran & mpif77,mpif90 & mpxlf,mpxlf90\\\hline
+C & mpicc & mpcc\\\hline
+C++ & mpiCC & mpCC\\
+\hline
+\end{tabular}
+\end{center}
+\end{bblock}
+\begin{itemize}
+  \item Usage: <compiler> <options> <your\_code>
+  \begin{enumerate}
+    {\scriptsize
+    \item[$\vardiamond$] Example: mpif90 -O2 -o myexec mycode.f90
+    }
+  \end{enumerate}
+  \item On Linux clusters
+  \begin{enumerate}
+    {\scriptsize
+    \item[$\vardiamond$] Only one compiler for each language
+    \item[$\vardiamond$] There is no intel\_mpicc or pg\_mpicc
+    }
+  \end{enumerate}
+  \item There are many different versions of MPI compilers on Linux clusters
+  \begin{enumerate}
+    {\scriptsize
+    \item[$\vardiamond$]  Each of them is built around a specific compiler
+    \item[$\vardiamond$]  Intel, PGI or GNU
+    }
+  \end{enumerate}
+  \item It is extremely important to compile and run you code with the same version!!!
+  \item Use the default version if possible
+  \item These MPI compilers are actually wrappers
+  \begin{enumerate}
+    {\scriptsize
+    \item[$\vardiamond$]  They still use the compilers we've seen on the previous slide
     \begin{enumerate}
-      \item[$\vardiamond$] Example: mpif90 -O2 -o myexec mycode.f90
+      {\scriptsize
+      \item[$\bigstar$]  Intel, PGI or GNU
+      }
     \end{enumerate}
-    \item On Linux clusters
+    \item[$\vardiamond$]  They take care of everything we need to build MPI codes
     \begin{enumerate}
-      \item[$\vardiamond$] Only one compiler for each language
-      \item[$\vardiamond$] There is no intel\_mpicc or pg\_mpicc
+      {\scriptsize
+      \item[$\bigstar$]  Head files, libraries etc.
+      }
     \end{enumerate}
-    \item There are many different versions of MPI compilers on Linux clusters
-    \begin{enumerate}
-      \item[$\vardiamond$]  Each of them is built around a specific compiler
-      \item[$\vardiamond$]  Intel, PGI or GNU
-    \end{enumerate}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{\small Compiling and Running MPI programs}
-  \begin{itemize}
-    \item It is extremely important to compile and run you code with the same version!!!
-    \item Use the default version if possible
-    \item These MPI compilers are actually wrappers
-    \begin{enumerate}
-      \item[$\vardiamond$]  They still use the compilers we've seen on the previous slide
-      \begin{enumerate}
-	\item[$\bigstar$]  Intel, PGI or GNU
-      \end{enumerate}
-      \item[$\vardiamond$]  They take care of everything we need to build MPI codes
-      \begin{enumerate}
-	\item[$\bigstar$]  Head files, libraries etc.
-      \end{enumerate}
-      \item[$\vardiamond$]  What they actually do can be reveal by the \texttt{-show} option
-    \end{enumerate}
-  \end{itemize}
-  {\tiny
-  \begin{alertblock}{}
-    {%\color{black}
-    \begin{verbatim}
+    \item[$\vardiamond$]  What they actually do can be reveal by the \texttt{-show} option
+    }
+  \end{enumerate}
+\end{itemize}
+{\tiny
+\begin{ablock}{}
+{%\color{black}
+\begin{verbatim}
 [apacheco@eric2 ~]$ mpif90 -show
 ln -s /usr/local/packages/mvapich/1.1/intel-11.1/include/mpif.h mpif.h
 ifort -fPIC -L/usr/local/ofed/lib64 -Wl,-rpath-link -Wl, \
@@ -816,350 +905,492 @@ ifort -fPIC -L/usr/local/ofed/lib64 -Wl,-rpath-link -Wl, \
   -lmpichf90nc -lmpichfarg -lmpich -L/usr/local/ofed/lib64 \
   -Wl,-rpath=/usr/local/ofed/lib64 -libverbs -libumad -lpthread -lpthread -lrt -limf
 rm -f mpif.h
-    \end{verbatim}
-    }
-  \end{alertblock}
-  }
+\end{verbatim}
+}
+\end{ablock}
+}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Application Packages}
+\frametitle{\small Application Packages}
+\begin{itemize}
+\item Installed under \texttt{/usr/local/packages}
+\item Most of them managed by SOFTENV
+\begin{itemize}
+{\scriptsize
+\item[$\vardiamond$] Numerical and utility libraries
+\begin{enumerate}
+{\scriptsize
+\item[$\blacksquare$] FFTW, HDF5, NetCDF, PetSc, Intel MKL
+}
+\end{enumerate}
+\item[$\vardiamond$] Computational Chemistry
+\begin{enumerate}
+{\scriptsize
+\item[$\blacksquare$] Amber, CPMD, Gaussian, GAMESS, Gromacs, LAMMPS, NAMD, NWCHEM
+}
+\end{enumerate}
+\item[$\vardiamond$] Visualization
+\begin{enumerate}
+{\scriptsize
+\item[$\blacksquare$] GaussView, VisIt, VMD 
+}
+\end{enumerate}
+\item[$\vardiamond$] Profiling/debugging tools
+\begin{enumerate}
+{\scriptsize
+\item[$\blacksquare$] DDT, Tau, TotalView
+}
+\end{enumerate}
+\item[$\vardiamond$] $\cdots$
+}
+\end{itemize}
+\item User Requested Packages
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] We install user requested packages either in user's home directory or system wide depending on usage
+}
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+ \begin{eblock}{Exercise 3: Compiling a code}
+  \begin{enumerate}
+  \item Serial Code
   \begin{itemize}
-    \item Installed under \texttt{/usr/local/packages}
-    \item Most of them managed by SOFTENV
-    \begin{itemize}
-      \item[$\vardiamond$] Numerical and utility libraries
-      \begin{enumerate}
-	\item[$\blacksquare$] FFTW, HDF5, NetCDF, PetSc, Intel MKL
-      \end{enumerate}
-      \item[$\vardiamond$] Computational Chemistry
-      \begin{enumerate}
-	\item[$\blacksquare$] Amber, CPMD, Gaussian, GAMESS, Gromacs, LAMMPS, NAMD, NWCHEM
-      \end{enumerate}
-      \item[$\vardiamond$] Visualization
-      \begin{enumerate}
-	\item[$\blacksquare$] GaussView, VisIt, VMD 
-      \end{enumerate}
-      \item[$\vardiamond$] Profiling/debugging tools
-      \begin{enumerate}
-	\item[$\blacksquare$] DDT, Tau, TotalView
-      \end{enumerate}
-      \item[$\vardiamond$] MPI Implementation
-      \begin{enumerate}
-	\item[$\blacksquare$] mvapich, mvapich2, mpich, openmpi
-      \end{enumerate}
-      \item[$\vardiamond$] $\cdots$
-    \end{itemize}
+   \only<1->{\item On Linux cluster, add the soft keys for either Intel (\texttt{+intel-fc-11.1}) or GCC (\texttt{+gcc-4.3.2})}
+   \only<1->{\item Compile \texttt{hello.f90} with a compiler of your choice}
+   \visible<2>{\item[] \texttt{ifort -o hello hello.f90}}
+   \visible<2>{\item[] \texttt{xlf90 -o hello hello.f90}}
+   \only<1->{\item Run the executable from the command line}
+   \visible<2>{\item[] \texttt{./hello}}
   \end{itemize}
-\end{frame}
+  \item Parallel Code
+  \begin{itemize}
+   \only<1->{\item On Linux cluster, find the appropriate key for mpi implementation of the above compiler}
+   \only<1->{\item Compile \texttt{hello\_mpi.f90}}
+   \visible<2>{\item[] \texttt{mpif90 -o hellompi hello\_mpi.f90}}
+   \only<1->{\item Do Not run the parallel code, we'll use a script to submit to a job manager}
+  \end{itemize}
 
-\begin{frame}
-  \frametitle{\small Exercise 3: Compiling a code}
-  \begin{eblock}{}
-    \begin{enumerate}
-      \item Serial Code
-      \begin{itemize}
-	\only<1->{\item On Linux cluster, add the soft keys for either Intel (\texttt{+intel-fc-11.1}) or GCC (\texttt{+gcc-4.3.2})}
-	\only<1->{\item Compile \texttt{hello.f90} with a compiler of your choice}
-	\visible<2>{\item[] \texttt{ifort -o hello hello.f90}}
-	\only<1->{\item Run the executable from the command line}
-	\visible<2>{\item[] \texttt{./hello}}
-      \end{itemize}
-      \item Parallel Code
-      \begin{itemize}
-	\only<1->{\item On Linux cluster, find the appropriate key for mpi implementation of the above compiler}
-	\only<1->{\item Compile \texttt{hello\_mpi.f90}}
-	\visible<2>{\item[] \texttt{mpif90 -o hellompi hello\_mpi.f90}}
-	\only<1->{\item Do Not run the parallel code, we'll use a script to submit to a job manager}
-      \end{itemize}
-    \end{enumerate}
-  \end{eblock}
+  \end{enumerate}
+ \end{eblock}
+
 \end{frame}
 
 \section{Job Management}
 \subsection{Queues}
 \begin{frame}
-  \frametitle{\small The Cluster Environment}
-  \vspace{-0.5cm}
-  \begin{columns}
-    \column{4cm}
-    \begin{itemize}
-      \item A cluster is a group of computers (nodes) that works together closely
-      \item Type of nodes
-      \begin{enumerate}
-	{\scriptsize
-	\item[$\vardiamond$] Head node
-	\item[$\vardiamond$] Multiple Compute nodes
-	}
-      \end{enumerate}
-      \item Multi User Environment
-      \item Each user may have multiple jobs running simultaneously.
-    \end{itemize}
-    \column{7cm}
-    \begin{center}
-      \includegraphics[width=1.05\textwidth,clip=true]{cluster}
-    \end{center}
-  \end{columns}
+\frametitle{\small The Cluster Environment}
+\begin{columns}
+\column{4cm}
+\begin{itemize}
+\item A cluster is a group of computers (nodes) that works together closely
+\item Type of nodes
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Head node
+\item[$\vardiamond$] Multiple Compute nodes
+}
+\end{enumerate}
+\item Multi User Environment
+\item Each user may have multiple jobs running simultaneously.
+\end{itemize}
+\column{7cm}
+\begin{center}
+\includegraphics[width=1.05\textwidth,clip=true]{cluster}
+\end{center}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Batch Queuing System}
-  \begin{bblock}{}
-    \begin{itemize}
-      \item A software that manages resources (CPU time, memory, etc) and schedules job execution
-      \begin{enumerate}
-	\item[$\vardiamond$] Linux Clusters: Portable Batch System (PBS)
-	\item[$\vardiamond$] AIX Clusters: Loadleveler
-      \end{enumerate}
-      \item A job can be considered as a user's request to use a certain amount of resources for a certain amount of time
-      \item The batch queuing system determines
-      \begin{enumerate}
-	\item The order jobs are executed
-	\item On which node(s) jobs are executed
-      \end{enumerate}
-    \end{itemize}
-  \end{bblock}
+\frametitle{\small Batch Queuing System}
+\begin{bblock}{}
+\begin{itemize}
+\item A software that manages resources (CPU time, memory, etc) and schedules job execution
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Linux Clusters: Portable Batch System (PBS)
+\item[$\vardiamond$] AIX Clusters: Loadleveler
+}
+\end{enumerate}
+\item A job can be considered as a user's request to use a certain amount of resources for a certain amount of time
+\item The batch queuing system determines
+\begin{enumerate}
+{\scriptsize
+\item The order jobs are executed
+\item On which node(s) jobs are executed
+}
+\end{enumerate}
+\end{itemize}
+\end{bblock}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small A Simplified View of Job Scheduling}
-  \begin{columns}
-    \column{7cm}
-    \vspace{-1cm}
-    \begin{center}
-      \includegraphics[width=0.85\textwidth,clip=true]{JobSchedule-1}
-    \end{center}
-    \column{5cm}
-    \vspace{-0.5cm}
-    \begin{bblock}{}
-      \begin{itemize}
-	\item Map jobs onto the node-time space
-	\begin{itemize}
-	  \item Assuming CPU time is the only resource
-	\end{itemize}
-	\item Need to find a balance between
-	\begin{itemize}
-	  \item Honoring the order in which jobs are received
-	  \item Maximizing resource utilization
-	\end{itemize}
-      \end{itemize}
-    \end{bblock}
-  \end{columns}
+\frametitle{\small A Simplified View of Job Scheduling}
+\begin{columns}
+\column{7cm}
+\vspace{-1cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth,clip=true]{JobSchedule-1}
+\end{center}
+\column{5cm}
+\vspace{-0.5cm}
+\begin{bblock}{}
+\begin{itemize}
+\item Map jobs onto the node-time space
+\begin{itemize}
+{\scriptsize
+\item Assuming CPU time is the only resource
+}
+\end{itemize}
+\item Need to find a balance between
+\begin{itemize}
+{\scriptsize
+\item Honoring the order in which jobs are received
+\item Maximizing resource utilization
+}
+\end{itemize}
+\end{itemize}
+\end{bblock}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Backfilling}
-  \begin{columns}
-    \column{7cm}
-    \vspace{-1cm}
-    \begin{center}
-      \includegraphics[width=0.85\textwidth,clip=true]{JobSchedule-2}
-    \end{center}
-    \column{5cm}
-    \vspace{-0.5cm}
-    \begin{bblock}{}
-      \begin{itemize}
-	\item A strategy to improve utilization
-	\begin{itemize}
-	  \item Allow a job to jump ahead of others when there are enough idle nodes
-	  \item Must not affect the estimated start time of the job with the highest priority
-	\end{itemize}
-	\item Enabled on all LONI clusters
-      \end{itemize}
-    \end{bblock}
-  \end{columns}
+\frametitle{\small Backfilling}
+\begin{columns}
+\column{7cm}
+\vspace{-1cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth,clip=true]{JobSchedule-2}
+\end{center}
+\column{5cm}
+\vspace{-0.5cm}
+\begin{bblock}{}
+\begin{itemize}
+\item A strategy to improve utilization
+\begin{itemize}
+{\scriptsize
+\item Allow a job to jump ahead of others when there are enough idle nodes
+\item Must not affect the estimated start time of the job with the highest priority
+}
+\end{itemize}
+\item Enabled on all LONI and LSU HPC clusters
+\end{itemize}
+\end{bblock}
+\end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small How much time Should I request?}
-  \begin{columns}
-    \column{0.5\textwidth}
-    \vspace{-1cm}
-    \begin{center}
-      \includegraphics[width=0.9\textwidth,clip=true]{JobSchedule-3}
-    \end{center}
-    \column{0.5\textwidth}
-    \vspace{-1cm}
-    \begin{center}
-      \includegraphics[width=0.9\textwidth,clip=true]{JobSchedule-4}
-    \end{center}
-  \end{columns}
-  \begin{bblock}{}
-    \begin{itemize}
-      \item Ask for an amount of time that is
-      \begin{itemize}
-	\item Long enough for your job to complete
-	\item As short as possible to increase the chance of backfilling
-      \end{itemize}
-    \end{itemize}
-  \end{bblock}
+\frametitle{\small How much time Should I request?}
+\begin{columns}
+\column{0.5\textwidth}
+\vspace{-1cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth,clip=true]{JobSchedule-3}
+\end{center}
+\column{0.5\textwidth}
+\vspace{-1cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth,clip=true]{JobSchedule-4}
+\end{center}
+\end{columns}
+\begin{bblock}{}
+\begin{itemize}
+\item Ask for an amount of time that is
+\begin{itemize}
+{\scriptsize
+\item Long enough for your job to complete
+\item As short as possible to increase the chance of backfilling
+}
+\end{itemize}
+\end{itemize}
+\end{bblock}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Job Queues}
-  \begin{bblock}{}
-    \begin{itemize}
-      \item There are more than one job queue
-      \item Each job queue differs in
-      \begin{itemize}
-	\item Number of available nodes
-	\item Maximum run time
-	\item Maximum running jobs per user
-      \end{itemize}
-      \item The main purpose is to maximize utilization
-    \end{itemize}
-  \end{bblock}
+\frametitle{\small Job Queues}
+\begin{bblock}{}
+\begin{itemize}
+\item There are more than one job queue
+\item Each job queue differs in
+\begin{itemize}
+{\scriptsize
+\item Number of available nodes
+\item Maximum run time
+\item Maximum running jobs per user
+}
+\end{itemize}
+\item The main purpose is to maximize utilization
+\end{itemize}
+\end{bblock}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Queue Characteristics: LONI Linux Clusters}
-  \begin{columns}
-    \column{12cm}
-    \vspace{-0.5cm}
-    \begin{bblock}{QueenBee}
-      {\scriptsize
-      \begin{center}
-	\begin{tabular}{|m{0.1\textwidth}|m{0.1\textwidth}|m{0.1\textwidth}|m{0.12\textwidth}|m{0.1\textwidth}|m{0.25\textwidth}|}
-	  \hline
-	  Queue & Max Runtime & Total number of nodes & Max running jobs per user & Max nodes per job & Use \\
-	  \hline
-	  workq & \multirow{4}{*}{2 days} & 530 & \multirow{2}{*}{8} & 128 & Unpreemptable \\
-	  \cline{1-1}\cline{3-3}\cline{5-6}
-	  checkpt & & 668 & & 256 & preemptable\\
-	  \cline{1-1}\cline{3-6}
-	  preempt & & 668 & \multicolumn{2}{c|}{NA} & Requires permission \\
-	  \cline{1-1}\cline{3-6}
-	  priority & & 668 & \multicolumn{2}{c|}{NA} & Requires permission \\\hline 
-	\end{tabular}
-      \end{center}
-      }
-    \end{bblock}
-    \begin{bblock}{Other Clusters}
-      {\scriptsize
-      \begin{center}
-	\begin{tabular}{|m{0.1\textwidth}|m{0.1\textwidth}|m{0.1\textwidth}|m{0.12\textwidth}|m{0.1\textwidth}|m{0.25\textwidth}|}
-	  \hline
-	  Queue & Max Runtime & Total number of nodes & Max running jobs per user & Max nodes per job & Use \\
-	  \hline
-	  single & 14 days & 16 & 64 & 1 & Single processor jobs \\\hline
-	  workq & \multirow{4}{*}{3 days} & 96 & \multirow{2}{*}{8} & 40 & Unpreemptable \\
-	  \cline{1-1}\cline{3-3}\cline{5-6}
-	  checkpt & & 128 & & 64 & preemptable\\
-	  \cline{1-1}\cline{3-6}
-	  preempt & & 64 & \multicolumn{2}{c|}{NA} & Requires permission \\
-	  \cline{1-1}\cline{3-6}
-	  priority & & 64 & \multicolumn{2}{c|}{NA} & Requires permission\\
-	  \hline
-	\end{tabular}
-      \end{center}
-      }
-    \end{bblock}
-  \end{columns}
+\frametitle{\small Queue Characteristics: LONI Linux Clusters}
+\begin{columns}
+\column{12cm}
+\begin{bblock}{QueenBee}
+{\scriptsize
+\begin{center}
+\begin{tabular}{|m{0.1\textwidth}|m{0.1\textwidth}|m{0.1\textwidth}|m{0.12\textwidth}|m{0.1\textwidth}|m{0.25\textwidth}|}
+\hline
+Queue & Max Runtime & Total number of nodes & Max running jobs per user & Max nodes per job & Use \\
+\hline
+workq & \multirow{2}{*}{3 days} & 530 & \multirow{2}{*}{8} & 128 & Unpreemptable \\
+\cline{1-1}\cline{3-3}\cline{5-6}
+checkpt & & 668 & & 256 & preemptable\\
+\cline{1-6}
+%preempt & \multirow{2}{*}{2 days} & 668 & \multicolumn{2}{c|}{NA} & Requires permission \\
+%\cline{1-1}\cline{3-6}
+%priority & & 668 & \multicolumn{2}{c|}{NA} & Requires permission \\\hline 
+\end{tabular}
+\end{center}
+}
+\end{bblock}
+\vspace{0.5cm}
+\begin{bblock}{Other Clusters}
+{\scriptsize
+\begin{center}
+\begin{tabular}{|m{0.1\textwidth}|m{0.1\textwidth}|m{0.1\textwidth}|m{0.12\textwidth}|m{0.1\textwidth}|m{0.25\textwidth}|}
+\hline
+Queue & Max Runtime & Total number of nodes & Max running jobs per user & Max nodes per job & Use \\
+\hline
+single & 14 days & 16 & 64 & 1 & Single processor jobs \\\hline
+workq & \multirow{2}{*}{3 days} & 96 & \multirow{2}{*}{8} & 40 & Unpreemptable \\
+\cline{1-1}\cline{3-3}\cline{5-6}
+checkpt & & 128 & & 64 & preemptable\\
+%\cline{1-1}\cline{3-6}
+%preempt & & 64 & \multicolumn{2}{c|}{NA} & Requires permission \\
+%\cline{1-1}\cline{3-6}
+%priority & & 64 & \multicolumn{2}{c|}{NA} & Requires permission\\
+\hline
+\end{tabular}
+\end{center}
+}
+\end{bblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Queue Characteristics: LSU HPC Linux Clusters}
+\begin{columns}
+\column{12cm}
+\begin{bblock}{Tezpur}
+{\scriptsize
+\begin{center}
+\begin{tabular}{|m{0.1\textwidth}|m{0.1\textwidth}|m{0.1\textwidth}|m{0.12\textwidth}|m{0.1\textwidth}|m{0.25\textwidth}|}
+\hline
+Queue & Max Runtime & Total number of nodes & Max running jobs per user & Max nodes per job & Use \\
+\hline
+single & \multirow{3}{*}{3 days} & 16 & 64 & 1 & Single processor jobs \\
+\cline{1-1}\cline{3-6}
+workq &  & 180 & \multirow{2}{*}{8} & 90 & Unpreemptable \\
+\cline{1-1}\cline{3-3}\cline{5-6}
+checkpt & & 344 & & 180 & preemptable\\
+%\cline{1-1}\cline{3-6}
+%preempt & &  \multicolumn{3}{c|}{NA} & Requires permission \\
+%\cline{1-1}\cline{3-6}
+%priority & &  \multicolumn{3}{c|}{NA} & Requires permission \\
+\hline 
+\end{tabular}
+\end{center}
+}
+\end{bblock}
+\vspace{0.25cm}
+\begin{bblock}{Philip}
+{\scriptsize
+\begin{center}
+\begin{tabular}{|m{0.1\textwidth}|m{0.1\textwidth}|m{0.1\textwidth}|m{0.12\textwidth}|m{0.1\textwidth}|m{0.25\textwidth}|}
+\hline
+Queue & Max Runtime & Total number of nodes & Max running jobs per user & Max nodes per job & Use \\
+\hline
+single & \multirow{4}{*}{3 days} & 24 & \multirow{5}{*}{12} & 1 & Single processor jobs \\
+\cline{1-1}\cline{3-3}\cline{5-6}
+workq &  & 28 &  & \multirow{3}{*}{5} & Unpreemptable \\
+\cline{1-1}\cline{3-3}\cline{6-6}
+checkpt & & 28 & &  & preemptable\\
+\cline{1-1}\cline{3-3}\cline{6-6}
+bigmem & & 5 & & & preemptable \\
+%\cline{1-1}\cline{3-6}
+%preempt & &  \multicolumn{3}{c|}{NA} & Requires permission \\
+%\cline{1-1}\cline{3-6}
+%priority & &  \multicolumn{3}{c|}{NA} & Requires permission \\
+\cline{1-3}\cline{5-6} 
+gpu & 2 days & 2 & & 2 & preemptable \\\hline
+\end{tabular}
+\end{center}
+}
+\end{bblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{\small Queue Characteristics: LSU HPC AIX Clusters}
+\begin{columns}
+\column{12cm}
+\begin{bblock}{Pandora}
+{\scriptsize
+\begin{center}
+\begin{tabular}{|m{0.1\textwidth}|m{0.1\textwidth}|m{0.1\textwidth}|m{0.12\textwidth}|m{0.1\textwidth}|m{0.25\textwidth}|}
+\hline
+Queue & Max Runtime & Total number of processors & Max running jobs per user & Max processors per job & Use \\
+\hline
+interactive &  30mins & 8 & \multirow{3}{*}{6} & 8 & Interactive Jobs \\
+\cline{1-3}\cline{5-6}
+workq & 3 days & 224 & & 128 & Standard Queue\\
+\cline{1-3}\cline{5-6}
+single & 7 days & 64  &   & 32 & Single Node Jobs  \\
+\hline
+\end{tabular}
+\end{center}
+}
+\end{bblock}
+\end{columns}
 \end{frame}
 
 \subsection{Job Manager Commands}
 \begin{frame}
-  \frametitle{\small Basic Job Manager Commands}
-  \begin{bblock}{}
-    \begin{itemize}
-      \item Queue querying
-      \begin{itemize}
-	\item Check how busy the cluster is
-      \end{itemize}
-      \item Job submission
-      \item Job monitoring
-      \begin{itemize}
-	\item Check job status (estimated start time, remaining run time, etc)
-      \end{itemize}
-      \item Job manipulation
-      \begin{itemize}
-	\item Cancel/Hold jobs
-      \end{itemize}
-    \end{itemize}
-  \end{bblock}
+\frametitle{\small Basic Job Manager Commands}
+\begin{bblock}{}
+\begin{itemize}
+\item Queue querying
+\begin{itemize}
+{\scriptsize
+\item Check how busy the cluster is
+}
+\end{itemize}
+\item Job submission
+\item Job monitoring
+\begin{itemize}
+{\scriptsize
+\item Check job status (estimated start time, remaining run time, etc)
+}
+\end{itemize}
+\item Job manipulation
+\begin{itemize}
+{\scriptsize
+\item Cancel/Hold jobs
+}
+\end{itemize}
+\end{itemize}
+\end{bblock}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{\small Queue Querying: Linux Clusters}
-  \begin{itemize}
-    \item \texttt{qfree}: show number of free,busy and queued nodes
-    \item \texttt{qfreeloni}: run \texttt{qfree} on all LONI Linux clusters
-  \end{itemize}
-  \begin{eblock}{}
-    {\tiny
-    \begin{verbatim}
+\frametitle{\small Queue Querying: Linux Clusters}
+%\begin{bblock}{}
+\begin{itemize}
+\item \texttt{qfree}: show number of free,busy and queued nodes
+\item \texttt{qfreeloni}: run \texttt{qfree} on all LONI Linux clusters
+\end{itemize}
+%\end{bblock}
+\begin{eblock}{}
+{\tiny
+\begin{verbatim}
 [apacheco@eric2 ~]$ qfree
-PBS total nodes: 128,  free: 49,  busy: 79,  down: 0,  use: 61%
+PBS total nodes: 128,  free: 49,  busy: 79,  down: 0,  use: 61\%
 PBS workq nodes: 96,  free: 40,  busy: 28,  queued: 0
 PBS checkpt nodes: 104,  free: 40,  busy: 35,  queued: 0
 PBS single nodes: 32,  free: 9 *36,  busy: 16,  queued: 366
 [apacheco@eric2 ~]$ qfreeloni
 -------- qb --------
-PBS total nodes: 668,  free: 3,  busy: 647,  down: 18,  use: 96%
+PBS total nodes: 668,  free: 3,  busy: 647,  down: 18,  use: 96\%
 PBS workq nodes: 530,  free: 0,  busy: 278,  queued: 367
 PBS checkpt nodes: 668,  free: 1,  busy: 369,  queued: 770
 -------- eric --------
-PBS total nodes: 128,  free: 49,  busy: 79,  down: 0,  use: 61%
+PBS total nodes: 128,  free: 49,  busy: 79,  down: 0,  use: 61\%
 PBS workq nodes: 96,  free: 40,  busy: 28,  queued: 0
 PBS checkpt nodes: 104,  free: 40,  busy: 35,  queued: 0
 PBS single nodes: 32,  free: 9 *36,  busy: 16,  queued: 366
 -------- louie --------
-PBS total nodes: 128,  free: 44,  busy: 83 *2,  down: 1,  use: 64%
+PBS total nodes: 128,  free: 44,  busy: 83 *2,  down: 1,  use: 64\%
 PBS workq nodes: 104,  free: 40,  busy: 0,  queued: 0
 PBS checkpt nodes: 128,  free: 44,  busy: 82,  queued: 50
 PBS single nodes: 32,  free: 7 *26,  busy: 2,  queued: 0
 -------- oliver --------
-PBS total nodes: 128,  free: 74,  busy: 52,  down: 2,  use: 40%
+PBS total nodes: 128,  free: 74,  busy: 52,  down: 2,  use: 40\%
 PBS workq nodes: 62,  free: 8,  busy: 11,  queued: 0
 ...
-    \end{verbatim}
-    }
-  \end{eblock}
+\end{verbatim}
+}
+\end{eblock}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\small Queue Querying: AIX Clusters}
+\begin{itemize}
+\item Command: \texttt{llclass}
+\end{itemize}
+\begin{columns}
+\column{12cm}
+\begin{eblock}{}
+{\tiny
+\begin{verbatim}
+pandora1:~ apacheco$ llclass
+Name                 MaxJobCPU     MaxProcCPU  Free   Max Description          
+                    d+hh:mm:ss     d+hh:mm:ss Slots Slots                      
+--------------- -------------- -------------- ----- ----- ---------------------
+interactive          unlimited      unlimited     8     8 Queue for interactive jobs; maximum runtime of 30 minutes.
+workq                unlimited      unlimited    28   224 Standard queue for job submissions; maximum runtime of 3 days.
+cheme                unlimited      unlimited    24    96 Queue for Chemical Engineering; maximum runtime of 3 days.
+single               unlimited      unlimited    24    64 Queue for single-node job submissions; maximum runtime of 3 days.
+--------------------------------------------------------------------------------
+"Free Slots" values of the classes "workq", "cheme" are constrained by the MAX_STARTERS limit(s).
+\end{verbatim}
+}
+\end{eblock}
+\end{columns}
 \end{frame}
 
 \subsection{Job Types}
 \begin{frame}[overlayarea]
-  \frametitle{\small Job Types}
-  \only<1>{
-  \begin{bblock}{Interactive Jobs}
-    \begin{itemize}
-      \item Set up an interactive environment on compute nodes for users
-      \begin{itemize}
-	\item[$\blacksquare$] Advantage: can run programs interactively
-	\item[$\blacksquare$] Disadvantage: must be present when job starts
-      \end{itemize}
-      \item Purpose:  testing and debugging code. \textbf{Do not run jobs on head node!!!}
-      \item[] \texttt{qsub -I -V -l walltime=<hh:mm:ss>,nodes=<\# of nodes>:ppn=cpu -A <your allocation> -q <queue name>}
-      \item On QueenBee, cpu=8
-      \item Other LONI Clusters:  cpu=4 (parallel jobs) or cpu=1 (single queue)
-      \item To enable X-forwarding: add \texttt{-X}
-    \end{itemize}
-  \end{bblock}
-  }
-  \only<2>{
-  \begin{bblock}{Batch Jobs}
-    \begin{itemize}
-      \item Executed using a batch script without user intervention
-      \begin{itemize}
-	\item[$\blacksquare$] Advantage: system takes care of running the job
-	\item[$\blacksquare$] Disadvantage: can change sequence of commands after submission
-      \end{itemize}
-      \item Useful for Production runs
-      \item[] \texttt{qsub <job script>}
-      \item[] \texttt{llsubmit <job script>}
-    \end{itemize}
-  \end{bblock}
-  }
+\frametitle{\small Job Types}
+\only<1>{
+\begin{bblock}{Interactive Jobs}
+\begin{itemize}
+\item Set up an interactive environment on compute nodes for users
+\begin{itemize}
+{\scriptsize
+\item[$\blacksquare$] Advantage: can run programs interactively
+\item[$\blacksquare$] Disadvantage: must be present when job starts
+}
+\end{itemize}
+\item Purpose:  testing and debugging code. \textbf{Do not run jobs on head node!!!}
+\item[] \texttt{qsub -I -V -l walltime=<hh:mm:ss>,nodes=<\# of nodes>:ppn=cpu -A <your allocation> -q <queue name>}
+\item On QueenBee, cpu=8
+\item Other LONI Clusters:  cpu=4 (parallel jobs)% or cpu=1 (single queue)
+\item To enable X-forwarding: add \texttt{-X}
+\end{itemize}
+\end{bblock}
+}
+\only<2>{
+\begin{bblock}{Batch Jobs}
+\begin{itemize}
+\item Executed using a batch script without user intervention
+\begin{itemize}
+{\scriptsize
+\item[$\blacksquare$] Advantage: system takes care of running the job
+\item[$\blacksquare$] Disadvantage: can change sequence of commands after submission
+}
+\end{itemize}
+\item Useful for Production runs
+\item[] \texttt{qsub <job script>}
+\item[] \texttt{llsubmit <job script>}
+\end{itemize}
+\end{bblock}
+}
 \end{frame}
 
 \subsection{Job Submission Scripts}
 \begin{frame}[fragile]
-  \frametitle{\small PBS Job Script: Parallel Jobs}
-  \begin{columns}
-  \column{7.2cm}
-  \begin{eblock}{}
-    {\footnotesize
-    \begin{verbatim}
+\frametitle{\small PBS Job Script: Parallel Jobs}
+\begin{columns}
+\column{7.2cm}
+\begin{eblock}{}
+{\footnotesize
+\begin{verbatim}
 #!/bin/bash
 #PBS -l nodes=4:ppn=4
 #PBS -l walltime=24:00:00
@@ -1175,13 +1406,13 @@ PBS workq nodes: 62,  free: 8,  busy: 11,  queued: 0
 mpirun  -machinefile $PBS_NODEFILE \
  -np 16 <path_to_executable> <options>
 <shell commands>
-    \end{verbatim}
-  }
-  \end{eblock}
-  \column{4.5cm}
-  \begin{ablock}{}
-    {\footnotesize %\color{red}
-    \begin{verbatim}
+\end{verbatim}
+}
+\end{eblock}
+\column{4.5cm}
+\begin{ablock}{}
+{\footnotesize %\color{red}
+\begin{verbatim}
 Shell being used
 # of nodes & processors
 Maximum walltime
@@ -1197,19 +1428,19 @@ shell commands
 run parallel job
 
 shell commands
-      \end{verbatim}
-      }
-    \end{ablock}
-  \end{columns}
+\end{verbatim}
+}
+\end{ablock}
+\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{\small PBS Job Script: Serial Jobs}
-  \begin{columns}
-    \column{7.2cm}
-    \begin{eblock}{}
-      {\footnotesize
-      \begin{verbatim}
+\frametitle{\small PBS Job Script: Serial Jobs}
+\begin{columns}
+\column{7.2cm}
+\begin{eblock}{}
+{\footnotesize
+\begin{verbatim}
 #!/bin/bash
 #PBS -l nodes=1:ppn=1
 #PBS -l walltime=24:00:00
@@ -1224,13 +1455,13 @@ shell commands
 <shell commands>			
 <path_to_executable> <options>
 <shell commands>
-      \end{verbatim}
-    }
-    \end{eblock}
-    \column{4.5cm}
-    \begin{ablock}{}
-      {\footnotesize %\color{red}
-      \begin{verbatim}
+\end{verbatim}
+}
+\end{eblock}
+\column{4.5cm}
+\begin{ablock}{}
+{\footnotesize %\color{red}
+\begin{verbatim}
 Shell being used
 # of nodes & processors
 Maximum walltime
@@ -1245,128 +1476,315 @@ to this address
 shell commands
 run parallel job
 shell commands
-      \end{verbatim}
-      }
-    \end{ablock}
-  \end{columns}
+\end{verbatim}
+}
+\end{ablock}
+\end{columns}
+\end{frame}
+
+
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{\small Loadleveler Job Script}
+\vspace{-0.5cm}
+\begin{columns}
+\column{7.2cm}
+\begin{eblock}{}
+{\tiny
+\begin{verbatim}
+#!/bin/sh
+#@ job_type = parallel 
+#@ output = $(jobid).out
+#@ error = $(jobid).err
+#@ notification = error
+#@ notify_user = youremail@domain
+#@ class = checkpt
+#@ wall_clock_limit = 24:00:00
+#@ node_usage = shared
+#@ node = 2
+#@ total_tasks = 32
+#@ resources = ConsumableMem(512 mb) ConsumableCPUS(1)
+#@ network.MPI_LAPI = sn_all,shared,US.HIGH
+#@ requirements = (Arch == "POWER7")
+#@ environment = COPY_ALL
+#@ queue
+
+<shell commands>			
+poe <path_to_executable> <options>
+<shell commands>
+\end{verbatim}
+}
+\end{eblock}
+\column{4.5cm}
+\begin{ablock}{}
+{\tiny %\color{red}
+\begin{verbatim}
+Shell being used
+Job Type
+standard output
+standard error
+notify on error
+to mail address
+job queue
+max walltime
+node usage
+# of nodes
+total processors
+resources requested per processor
+network directive
+job requirements
+environment
+
+
+shell commands
+run parallel job
+shell commands
+\end{verbatim}
+}
+\end{ablock}
+\end{columns}
+\newpage
+\vspace{-0.5cm}
+\begin{columns}
+\column{7.2cm}
+\begin{eblock}{}
+{\tiny
+\begin{verbatim}
+#!/bin/sh
+#@ job_type = serial 
+#@ output = $(jobid).out
+#@ error = $(jobid).err
+#@ notification = error
+#@ notify_user = youremail@domain
+#@ class = checkpt
+#@ wall_clock_limit = 24:00:00
+#@ node_usage = shared
+#@ node = 1
+#@ total_tasks = 1
+#@ resources = ConsumableMem(512 mb) ConsumableCPUS(1)
+#@ requirements = (Arch == "POWER7")
+#@ environment = COPY_ALL
+#@ queue
+
+<shell commands>			
+<path_to_executable> <options>
+<shell commands>
+\end{verbatim}
+}
+\end{eblock}
+\column{4.5cm}
+\begin{ablock}{}
+{\tiny %\color{red}
+\begin{verbatim}
+Shell being used
+Job Type
+standard output
+standard error
+notify on error
+to mail address
+job queue
+max walltime
+node usage
+# of nodes
+total processors
+resources requested per processor
+job requirements
+environment
+
+
+shell commands
+run parallel job
+shell commands
+\end{verbatim}
+}
+\end{ablock}
+\end{columns}
+\newpage
+\begin{bblock}{}
+\begin{itemize}
+\item On Pandora: 
+\begin{itemize}
+\item \texttt{\#@ resources = ConsumableMem(512 mb) ConsumableCPUS(1)} is required
+\item \texttt{\#@ requirements = (Arch == "POWER7")}
+\item \texttt{\#@ network.MPI\_LAPI = sn\_all,shared,US,HIGH}
+\end{itemize}
+\end{itemize}
+\end{bblock}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Exercise 4: Job Submission}
-  \begin{eblock}{}
-    \begin{itemize}
-      \item Write a job submission script to execute the \texttt{hellompi} program.
-      \item Submit the script to the job manager.
-    \end{itemize}
-  \end{eblock}
+ \begin{eblock}{Exercise 4: Job Submission}
+  \begin{itemize}
+   \item Write a job submission script to execute the \texttt{hello\_mpi} program.
+   \item Submit the script to the job manager.
+  \end{itemize}
+ \end{eblock}
+
 \end{frame}
 
 
 \subsection{Job Monitoring \& Manipulation}
-\begin{frame}
-  \frametitle{\small Job Monitoring}
-  \begin{bblock}{Linux Clusters}
-    \begin{itemize}
-      \item \texttt{showstart <job id>}
-      \begin{enumerate}
-	\item[$\vardiamond$] Check estimated time when job can start
-      \end{enumerate}
-      \item When can the estimated time change
-      \begin{enumerate}
-	\item[$\vardiamond$] Higher priority job gets submitted
-	\item[$\vardiamond$] Running jobs terminate earlier than time requested
-	\item[$\vardiamond$] System has trouble starting your job
-      \end{enumerate}
-      \item \texttt{qstat <options> <job id>}
-      \begin{enumerate}
-	\item[$\vardiamond$] Show information on job status
-	\item[$\vardiamond$] All jobs displayed if \texttt{<job id>} is omitted
-	\item[$\vardiamond$] \texttt{qstat -u <username>}: Show jobs belonging to \texttt{<username>}
-	\item[$\vardiamond$] \texttt{qstat -a <job id>}: Displat in an alternative format
-      \end{enumerate}
-      \item \texttt{qshow <job id>}
-      \begin{enumerate}
-	\item[$\vardiamond$] Show information of running job \texttt{<job id>}: node running on and CPU load
-      \end{enumerate}
-    \end{itemize}
-  \end{bblock}
+\begin{frame}[allowframebreaks]
+\frametitle{\small Job Monitoring}
+\begin{bblock}{Linux Clusters}
+\begin{itemize}
+\item \texttt{showstart <job id>}
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Check estimated time when job can start
+}
+\end{enumerate}
+\item When can the estimated time change
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Higher priority job gets submitted
+\item[$\vardiamond$] Running jobs terminate earlier than time requested
+\item[$\vardiamond$] System has trouble starting your job
+}
+\end{enumerate}
+\item \texttt{qstat <options> <job id>}
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Show information on job status
+\item[$\vardiamond$] All jobs displayed if \texttt{<job id>} is omitted
+\item[$\vardiamond$] \texttt{qstat -u <username>}: Show jobs belonging to \texttt{<username>}
+\item[$\vardiamond$] \texttt{qstat -a <job id>}: Display in an alternative format
+}
+\end{enumerate}
+\item \texttt{qshow <job id>}
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$] Show information of running job \texttt{<job id>}: node running on and CPU load
+}
+\end{enumerate}
+\end{itemize}
+\end{bblock}
+\begin{bblock}{}
+\begin{itemize}
+\item \texttt{showbf -c <queue>}
+\begin{center}
+\includegraphics[width=0.8\textwidth,clip=true]{showbf}
+\end{center}
+\end{itemize}
+\end{bblock}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\small Job Monitoring}
+\begin{bblock}{AIX Clusters}
+\begin{itemize}
+\item \texttt{llq <options> <job id>}
+\begin{itemize}
+{\scriptsize
+\item[$\vardiamond$] All jobs are displayed if \texttt{<job id>} is omitted
+\item[$\vardiamond$] Display detailed information: \texttt{llq -l <job id>}
+\item[$\vardiamond$] Check estimated start time: \texttt{llq -s <job id>}
+\item[$\vardiamond$] Show jobs from a specific user: \texttt{llq -u <username>}
+}
+\end{itemize}
+\end{itemize}
+\end{bblock}
+{\tiny
+\begin{ablock}{}
+\begin{verbatim}
+pandora1:~ apacheco$ llq
+Id                       Owner      Submitted   ST PRI Class        Running On 
+------------------------ ---------- ----------- -- --- ------------ -----------
+pandora1.12700.0         ghoshbd     9/9  13:59 R  50  single       pandora002 
+pandora1.12701.0         ghoshbd     9/9  14:02 R  50  workq        pandora007 
+pandora1.12702.0         ghoshbd     9/9  14:04 R  50  single       pandora001 
+pandora1.12713.0         abhi300     9/10 17:12 R  50  single       pandora001 
+pandora1.12714.0         ghoshbd     9/11 01:24 R  50  workq        pandora004 
+pandora1.12716.0         hypoxia     9/11 09:14 R  50  workq        pandora008 
+pandora1.12717.0         abhi300     9/11 09:57 R  50  single       pandora002 
+
+7 job step(s) in queue, 0 waiting, 0 pending, 7 running, 0 held, 0 preempted
+\end{verbatim}
+\end{ablock}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\small Job Monitoring}
+\begin{bblock}{AIX Clusters}
+\begin{itemize}
+\item \texttt{showllstatus.py}: Show job status and node running on
+\end{itemize}
+\end{bblock}
+\begin{ablock}{}
+{\tiny
+\begin{verbatim}
+pandora1:~ apacheco$ showllstatus.py 
+Node          Status   Load       Arch Node          Status   Load       Arch
+pandora001    Run      20.20    POWER7 pandora006    Busy     32.09    POWER7
+pandora002    Run      20.39    POWER7 pandora007    Run      16.01    POWER7
+pandora003    Busy     32.04    POWER7 pandora008    Busy     32.10    POWER7
+pandora004    Busy     32.07    POWER7 pandora1      Idle     0.00     POWER7
+pandora005    Busy     32.02    POWER7 
+
+Step ID             Owner        Status   Class    Hosts  Queue Date   Disp. Date 
+pandora1.12717.0    abhi300         R     single     1    09/11 09:57  09/11 09:57
+pandora1.12716.0    hypoxia         R     workq      4    09/11 09:14  09/11 09:14
+pandora1.12714.0    ghoshbd         R     workq      1    09/11 01:24  09/11 01:24
+pandora1.12713.0    abhi300         R     single     1    09/10 17:12  09/10 17:12
+pandora1.12702.0    ghoshbd         R     single     1    09/09 14:04  09/09 14:04
+pandora1.12701.0    ghoshbd         R     workq      1    09/09 14:02  09/09 14:02
+pandora1.12700.0    ghoshbd         R     single     1    09/09 13:59  09/09 13:59
+\end{verbatim}
+}
+\end{ablock}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\small Job Manipulation}
-  \begin{bblock}{Linux Clusters}
-    \begin{itemize}
-      \item \texttt{qdel <job id>}
-      \begin{enumerate}
-	\item[$\vardiamond$] Cancel a running or queued job
-      \end{enumerate}
-      \item \texttt{qhold <job id>}
-      \begin{enumerate}
-	\item[$\vardiamond$] Put a queued job on hold
-      \end{enumerate}
-      \item \texttt{qrls <job id>}
-      \begin{enumerate}
-	\item[$\vardiamond$] Resume a held job
-      \end{enumerate}
-    \end{itemize}
-  \end{bblock}
-
-%  \begin{bblock}{AIX Clusters}
-%    \begin{itemize}
-%      \item \texttt{llcancel <job id>}
-%      \begin{enumerate}
-%	\item[$\vardiamond$] Cancel a running or queued job
-%      \end{enumerate}
-%      \item \texttt{llhold <job id>}
-%      \begin{enumerate}
-%	\item[$\vardiamond$] Put a queued job on hold
-%      \end{enumerate}
-%      \item \texttt{llhold -r <job id>}
-%      \begin{enumerate}
-%	\item[$\vardiamond$] Resume a held job
-%      \end{enumerate}
-%    \end{itemize}
-%  \end{bblock}
+\frametitle{\small Job Manipulation}
+\begin{bblock}{Linux Clusters}
+\begin{itemize}
+\item \texttt{qdel <job id>}\hspace{1cm} {\color{red}Cancel a running or queued job}
+\item \texttt{qhold <job id>}\hspace{0.8cm} {\color{red} Put a queued job on hold}
+\item \texttt{qrls <job id>}\hspace{1cm} {\color{red} Resume a held job }
+\end{itemize}
+\end{bblock}
+\vspace{1cm}
+\begin{bblock}{AIX Clusters}
+\begin{itemize}
+\item \texttt{llcancel <job id>}\hspace{1cm} {\color{red} Cancel a running or queued job }
+\item \texttt{llhold <job id>}\hspace{1.4cm} {\color{red} Put a queued job on hold }
+\item \texttt{llhold -r <job id>}\hspace{0.8cm} {\color{red} Resume a held job }
+\end{itemize}
+\end{bblock}
 \end{frame}
 
 \section{HPC Help}
 \begin{frame}
-  \frametitle{\small Additional Help}
-  \begin{itemize}
-    \item User's Guide
-    \begin{enumerate}
-      \item[$\vardiamond$]LONI: \url{https://docs.loni.org/wiki/Main_Page}
-    \end{enumerate}
-    \item Contact us
-    \begin{enumerate}
-      \item[$\vardiamond$]Email ticket system: sys-help@loni.org
-      \item[$\vardiamond$]Telephone Help Desk: 225-578-0900
-      \item[$\vardiamond$]Walk-in consulting session at Middleton Library
-      \begin{enumerate}
-	\item[$\bigstar$]Tuesdays and Thursdays only
-      \end{enumerate}
-      \item[$\vardiamond$]Instant Messenger (AIM, Yahoo Messenger, Google Talk)
-      \begin{enumerate}
-	\item[$\bigstar$]Add "lsuhpchelp"
-      \end{enumerate}
-    \end{enumerate}
-  \end{itemize}
-\end{frame} 
-
-\begin{frame}
-  \frametitle{\small  }
-  \vspace{1.2cm}
-  \begin{eblock}{}
-    \centering{
-      \Huge{
-	\vspace{0.5cm}
-	THE END\\
-	\vspace{1cm}
-	Questions, Comments ???
-      }
+\frametitle{\small Additional Help}
+\begin{itemize}
+\item User's Guide
+\begin{enumerate}
+{\scriptsize
+\item[$\vardiamond$]HPC: \url{http://www.hpc.lsu.edu/help}
+\item[$\vardiamond$]LONI: \url{https://docs.loni.org/wiki/Main_Page}
+}
+\end{enumerate}
+\item Contact us
+\begin{enumerate}
+  {\scriptsize
+  \item[$\vardiamond$]Email ticket system: sys-help@loni.org
+  \item[$\vardiamond$]Telephone Help Desk: 225-578-0900
+  \item[$\vardiamond$]Walk-in consulting session at Middleton Library
+  \begin{enumerate}
+    {\scriptsize
+    \item[$\bigstar$]Tuesdays and Thursdays only
     }
-  \end{eblock}
+  \end{enumerate}
+  \item[$\vardiamond$]Instant Messenger (AIM, Yahoo Messenger, Google Talk)
+  \begin{enumerate}
+    {\scriptsize
+    \item[$\bigstar$]Add "lsuhpchelp"
+    }
+  \end{enumerate}
+  }
+\end{enumerate}
+\end{itemize}
 \end{frame}
-
 \end{document}
 
